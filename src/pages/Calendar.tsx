@@ -7,8 +7,11 @@ import { startOfWeek } from 'date-fns/startOfWeek';
 import { getDay } from 'date-fns/getDay';
 import { ptBR } from 'date-fns/locale/pt-BR';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
-import { Plus, Calendar as CalendarIcon, Clock, AlignLeft, X } from 'lucide-react';
+import { Plus, Calendar as CalendarIcon, Clock, AlignLeft, X, ArrowLeft, Info } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
+import { motion, AnimatePresence } from 'motion/react';
+import { Link } from 'react-router-dom';
+import { Modal } from '../components/Modal';
 
 const locales = {
   'pt-BR': ptBR,
@@ -94,106 +97,120 @@ export default function Calendar() {
     }
   };
 
-    const eventStyleGetter = (event: any) => {
-      let backgroundColor = '#3b82f6'; // blue for meetings
-      
-      if (event.resource.type === 'TICKET') {
-        backgroundColor = '#ef4444'; // red for tickets
-      } else if (event.resource.type === 'OTHER') {
-        backgroundColor = '#8b5cf6'; // purple for other
+  const eventStyleGetter = (event: any) => {
+    let backgroundColor = 'rgba(59, 130, 246, 0.8)'; // blue for meetings
+    let border = '1px solid rgba(59, 130, 246, 0.5)';
+    
+    if (event.resource.type === 'TICKET') {
+      backgroundColor = 'rgba(239, 68, 68, 0.8)'; // red for tickets
+      border = '1px solid rgba(239, 68, 68, 0.5)';
+    } else if (event.resource.type === 'OTHER') {
+      backgroundColor = 'rgba(139, 92, 246, 0.8)'; // purple for other
+      border = '1px solid rgba(139, 92, 246, 0.5)';
+    }
+
+    return {
+      style: {
+        backgroundColor,
+        borderRadius: '8px',
+        opacity: 1,
+        color: 'white',
+        border,
+        display: 'block',
+        fontWeight: '600',
+        padding: '4px 8px',
+        fontSize: '0.75rem',
+        backdropFilter: 'blur(4px)',
+        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)'
       }
-  
-      return {
-        style: {
-          backgroundColor,
-          borderRadius: '4px',
-          opacity: 0.9,
-          color: 'white',
-          border: 'none',
-          display: 'block',
-          fontWeight: '500',
-          padding: '2px 6px',
-          fontSize: '0.75rem'
-        }
-      };
     };
+  };
 
   return (
-    <div className="max-w-7xl mx-auto h-[calc(100vh-8rem)] flex flex-col">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8 shrink-0">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Agenda</h1>
-          <p className="text-gray-600 dark:text-gray-400 mt-1">Compromissos e Ordens de Serviço</p>
+    <div className="min-h-screen bg-[#004a7c] text-white -m-8 p-8 md:p-12 overflow-x-hidden relative flex flex-col">
+      {/* Background Decorative Elements */}
+      <div className="absolute inset-0 opacity-20 pointer-events-none overflow-hidden">
+        <svg className="w-full h-full" viewBox="0 0 1000 1000" xmlns="http://www.w3.org/2000/svg">
+          <path d="M0,1000 C300,800 400,900 1000,600 L1000,1000 L0,1000 Z" fill="white" fillOpacity="0.1" />
+          <path d="M0,800 C200,600 500,700 1000,400 L1000,800 L0,800 Z" fill="white" fillOpacity="0.05" />
+        </svg>
+      </div>
+
+      <header className="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6 relative z-10 shrink-0">
+        <div className="flex items-center gap-4">
+          <Link to="/" className="p-3 bg-white/10 hover:bg-white/20 rounded-xl transition-colors md:hidden text-white border border-white/10 backdrop-blur-md">
+            <ArrowLeft className="w-6 h-6" />
+          </Link>
+          <div>
+            <h1 className="text-6xl font-light tracking-tight">Agenda</h1>
+            <p className="text-xl opacity-60 mt-2 font-light">Compromissos e Ordens de Serviço</p>
+          </div>
         </div>
-        <button 
+        
+        <motion.button 
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
           onClick={() => {
             setStartDate(new Date().toISOString().split('T')[0] + 'T09:00');
             setEndDate(new Date().toISOString().split('T')[0] + 'T10:00');
             setIsAdding(true);
             setSelectedEvent(null);
           }}
-          className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2"
+          className="bg-white/10 hover:bg-white/20 text-white px-8 py-4 flex items-center gap-3 border border-white/20 backdrop-blur-md transition-all rounded-xl"
         >
-          <Plus className="w-4 h-4" /> 
-          <span>Novo Compromisso</span>
-        </button>
-      </div>
+          <Plus className="w-6 h-6" /> 
+          <span className="text-lg font-medium">Novo Compromisso</span>
+        </motion.button>
+      </header>
 
-      <div className="flex-1 bg-white dark:bg-zinc-900 rounded-xl shadow-sm border border-gray-100 dark:border-zinc-800 p-6 overflow-hidden flex flex-col">
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="flex-1 bg-white/5 backdrop-blur-md rounded-3xl border border-white/10 p-8 shadow-2xl relative z-10 overflow-hidden flex flex-col"
+      >
         <style>{`
-          .rbc-calendar { font-family: 'Inter', system-ui, sans-serif; border: none; }
-          .rbc-month-view, .rbc-time-view, .rbc-header { border-color: #f3f4f6 !important; }
-          .dark .rbc-month-view, .dark .rbc-time-view, .dark .rbc-header { border-color: #27272a !important; }
-          .rbc-day-bg + .rbc-day-bg, .rbc-month-row + .rbc-month-row { border-color: #f3f4f6 !important; }
-          .dark .rbc-day-bg + .rbc-day-bg, .dark .rbc-month-row + .rbc-month-row { border-color: #27272a !important; }
-          .rbc-time-content > * + * > * { border-color: #f3f4f6 !important; }
-          .dark .rbc-time-content > * + * > * { border-color: #27272a !important; }
-          .rbc-timeslot-group { border-color: #f3f4f6 !important; min-height: 60px; }
-          .dark .rbc-timeslot-group { border-color: #27272a !important; }
-          .rbc-day-slot .rbc-time-slot { border-color: #f3f4f6 !important; }
-          .dark .rbc-day-slot .rbc-time-slot { border-color: #27272a !important; }
-          .rbc-off-range-bg { background-color: #f9fafb !important; }
-          .dark .rbc-off-range-bg { background-color: #18181b !important; }
-          .rbc-today { background-color: #eff6ff !important; }
-          .dark .rbc-today { background-color: #1e3a8a20 !important; }
+          .rbc-calendar { font-family: 'Inter', system-ui, sans-serif; border: none; color: white; }
+          .rbc-month-view, .rbc-time-view, .rbc-header { border-color: rgba(255,255,255,0.1) !important; }
+          .rbc-day-bg + .rbc-day-bg, .rbc-month-row + .rbc-month-row { border-color: rgba(255,255,255,0.1) !important; }
+          .rbc-time-content > * + * > * { border-color: rgba(255,255,255,0.1) !important; }
+          .rbc-timeslot-group { border-color: rgba(255,255,255,0.1) !important; min-height: 80px; }
+          .rbc-day-slot .rbc-time-slot { border-color: rgba(255,255,255,0.05) !important; }
+          .rbc-off-range-bg { background-color: rgba(0,0,0,0.1) !important; }
+          .rbc-today { background-color: rgba(255,255,255,0.05) !important; }
           .rbc-header { 
-            padding: 12px 8px !important; 
-            font-size: 0.875rem !important; 
-            font-weight: 600 !important; 
-            color: #4b5563 !important;
-            background: #f9fafb !important;
-            border-bottom: 1px solid #f3f4f6 !important;
+            padding: 16px 8px !important; 
+            font-size: 0.75rem !important; 
+            font-weight: 800 !important; 
+            color: rgba(255,255,255,0.4) !important;
+            background: transparent !important;
+            border-bottom: 1px solid rgba(255,255,255,0.1) !important;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
           }
-          .dark .rbc-header {
-            color: #d1d5db !important;
-            background: #18181b !important;
-            border-bottom: 1px solid #27272a !important;
-          }
-          .rbc-button-link { font-weight: 500 !important; color: inherit !important; }
-          .rbc-toolbar { margin-bottom: 24px !important; }
+          .rbc-button-link { font-weight: 600 !important; color: inherit !important; }
+          .rbc-toolbar { margin-bottom: 32px !important; }
           .rbc-toolbar button { 
-            border: 1px solid #e5e7eb !important; 
-            border-radius: 6px !important; 
-            padding: 8px 16px !important; 
-            font-weight: 500 !important; 
+            border: 1px solid rgba(255,255,255,0.1) !important; 
+            border-radius: 12px !important; 
+            padding: 10px 20px !important; 
+            font-weight: 600 !important; 
             font-size: 0.875rem !important; 
-            color: #374151 !important;
-            background: white !important;
+            color: white !important;
+            background: rgba(255,255,255,0.05) !important;
             transition: all 0.2s !important;
             margin-right: 8px !important;
+            backdrop-filter: blur(4px);
           }
-          .dark .rbc-toolbar button {
-            border-color: #3f3f46 !important;
-            color: #e4e4e7 !important;
-            background: #27272a !important;
-          }
-          .rbc-toolbar button:hover { background-color: #f3f4f6 !important; }
-          .dark .rbc-toolbar button:hover { background-color: #3f3f46 !important; }
-          .rbc-toolbar button.rbc-active { background-color: #dc2626 !important; color: white !important; border-color: #dc2626 !important; }
-          .dark .rbc-toolbar button.rbc-active { background-color: #dc2626 !important; color: white !important; border-color: #dc2626 !important; }
-          .rbc-event { transition: transform 0.1s !important; border-radius: 4px !important; }
-          .rbc-event:hover { transform: scale(1.02) !important; z-index: 10 !important; }
-          .rbc-show-more { font-weight: 500 !important; font-size: 0.875rem !important; color: #dc2626 !important; }
+          .rbc-toolbar button:hover { background-color: rgba(255,255,255,0.1) !important; }
+          .rbc-toolbar button.rbc-active { background-color: white !important; color: #004a7c !important; border-color: white !important; }
+          .rbc-event { transition: all 0.2s !important; }
+          .rbc-event:hover { transform: translateY(-2px) scale(1.02) !important; z-index: 10 !important; }
+          .rbc-show-more { font-weight: 700 !important; font-size: 0.75rem !important; color: white !important; opacity: 0.6; }
+          .rbc-time-view { border-radius: 20px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); }
+          .rbc-month-view { border-radius: 20px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); }
+          .rbc-time-header-content { border-left: 1px solid rgba(255,255,255,0.1) !important; }
+          .rbc-time-content { border-top: 1px solid rgba(255,255,255,0.1) !important; }
+          .rbc-label { color: rgba(255,255,255,0.4) !important; font-size: 0.75rem !important; font-weight: 600 !important; }
         `}</style>
         <BigCalendar
           localizer={localizer}
@@ -220,164 +237,159 @@ export default function Calendar() {
           onSelectEvent={handleSelectEvent}
           eventPropGetter={eventStyleGetter}
         />
-      </div>
+      </motion.div>
 
       {/* Add Appointment Modal */}
-      {isAdding && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white dark:bg-zinc-900 rounded-xl shadow-xl w-full max-w-md overflow-hidden">
-            <div className="flex justify-between items-center p-6 border-b border-gray-100 dark:border-zinc-800">
-              <h2 className="text-xl font-bold text-gray-900 dark:text-white">Novo Compromisso</h2>
-              <button onClick={() => setIsAdding(false)} className="p-2 hover:bg-gray-100 dark:hover:bg-zinc-800 rounded-lg transition-colors">
-                <X className="w-5 h-5 text-gray-500" />
-              </button>
-            </div>
-            
-            <form onSubmit={handleSave} className="p-6 space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-zinc-300 mb-1">Título *</label>
-                <input 
-                  type="text" 
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                  className="w-full border border-gray-300 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white rounded-lg px-4 py-2 focus:ring-2 focus:ring-red-500 outline-none"
-                  placeholder="Ex: Reunião com fornecedor"
-                  required
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-zinc-300 mb-1">Início *</label>
-                  <input 
-                    type="datetime-local" 
-                    value={startDate}
-                    onChange={(e) => setStartDate(e.target.value)}
-                    className="w-full border border-gray-300 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white rounded-lg px-4 py-2 focus:ring-2 focus:ring-red-500 outline-none"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-zinc-300 mb-1">Fim *</label>
-                  <input 
-                    type="datetime-local" 
-                    value={endDate}
-                    onChange={(e) => setEndDate(e.target.value)}
-                    className="w-full border border-gray-300 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white rounded-lg px-4 py-2 focus:ring-2 focus:ring-red-500 outline-none"
-                    required
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-zinc-300 mb-1">Tipo</label>
-                <select 
-                  value={type}
-                  onChange={(e) => setType(e.target.value as any)}
-                  className="w-full border border-gray-300 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white rounded-lg px-4 py-2 focus:ring-2 focus:ring-red-500 outline-none"
-                >
-                  <option value="MEETING">Reunião</option>
-                  <option value="OTHER">Outro</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-zinc-300 mb-1">Observações</label>
-                <textarea 
-                  value={notes}
-                  onChange={(e) => setNotes(e.target.value)}
-                  className="w-full border border-gray-300 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white rounded-lg px-4 py-2 focus:ring-2 focus:ring-red-500 outline-none min-h-[100px] resize-none"
-                />
-              </div>
-
-              <div className="pt-4 flex justify-end gap-2">
-                <button 
-                  type="button"
-                  onClick={() => setIsAdding(false)}
-                  className="px-4 py-2 text-gray-700 dark:text-zinc-300 hover:bg-gray-100 dark:hover:bg-zinc-800 rounded-lg transition-colors"
-                >
-                  Cancelar
-                </button>
-                <button 
-                  type="submit"
-                  className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg font-medium transition-colors"
-                >
-                  Salvar
-                </button>
-              </div>
-            </form>
+      <Modal 
+        isOpen={isAdding} 
+        onClose={() => setIsAdding(false)} 
+        title="Novo Compromisso"
+        maxWidth="sm"
+        glass
+      >
+        <form onSubmit={handleSave} className="space-y-6 p-2">
+          <div>
+            <label className="block text-sm font-bold uppercase tracking-wider text-white/50 mb-2">Título *</label>
+            <input 
+              type="text" 
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              className="w-full bg-white/5 border border-white/10 focus:border-white/30 rounded-xl px-4 py-3 outline-none transition-all text-white placeholder:text-white/30"
+              placeholder="Ex: Reunião com fornecedor"
+              required
+            />
           </div>
-        </div>
-      )}
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-bold uppercase tracking-wider text-white/50 mb-2">Início *</label>
+              <input 
+                type="datetime-local" 
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+                className="w-full bg-white/5 border border-white/10 focus:border-white/30 rounded-xl px-4 py-3 outline-none transition-all text-white"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-bold uppercase tracking-wider text-white/50 mb-2">Fim *</label>
+              <input 
+                type="datetime-local" 
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+                className="w-full bg-white/5 border border-white/10 focus:border-white/30 rounded-xl px-4 py-3 outline-none transition-all text-white"
+                required
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-bold uppercase tracking-wider text-white/50 mb-2">Tipo</label>
+            <select 
+              value={type}
+              onChange={(e) => setType(e.target.value as any)}
+              className="w-full bg-white/5 border border-white/10 focus:border-white/30 rounded-xl px-4 py-3 outline-none transition-all text-white appearance-none cursor-pointer"
+            >
+              <option value="MEETING" className="bg-[#004a7c]">Reunião</option>
+              <option value="OTHER" className="bg-[#004a7c]">Outro</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-sm font-bold uppercase tracking-wider text-white/50 mb-2">Observações</label>
+            <textarea 
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
+              className="w-full bg-white/5 border border-white/10 focus:border-white/30 rounded-xl px-4 py-3 outline-none transition-all text-white min-h-[120px] resize-none placeholder:text-white/30"
+              placeholder="Detalhes adicionais sobre o compromisso..."
+            />
+          </div>
+
+          <div className="pt-6 flex justify-end gap-3">
+            <button 
+              type="button"
+              onClick={() => setIsAdding(false)}
+              className="px-6 py-3 text-white/60 hover:text-white transition-colors font-medium"
+            >
+              Cancelar
+            </button>
+            <button 
+              type="submit"
+              className="bg-white/10 hover:bg-white/20 text-white px-10 py-3 rounded-xl font-bold backdrop-blur-md border border-white/30 transition-all active:scale-95"
+            >
+              SALVAR
+            </button>
+          </div>
+        </form>
+      </Modal>
 
       {/* View Event Modal */}
-      {selectedEvent && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white dark:bg-zinc-900 rounded-xl shadow-xl w-full max-w-md overflow-hidden">
-            <div className="flex justify-between items-center p-6 border-b border-gray-100 dark:border-zinc-800">
-              <h2 className="text-xl font-bold text-gray-900 dark:text-white">Detalhes</h2>
-              <button onClick={() => setSelectedEvent(null)} className="p-2 hover:bg-gray-100 dark:hover:bg-zinc-800 rounded-lg transition-colors">
-                <X className="w-5 h-5 text-gray-500" />
-              </button>
+      <Modal 
+        isOpen={!!selectedEvent} 
+        onClose={() => setSelectedEvent(null)} 
+        title="Detalhes do Evento"
+        maxWidth="sm"
+        glass
+      >
+        {selectedEvent && (
+          <div className="space-y-8 p-2">
+            <div className="flex items-start gap-5">
+              <div className={`p-4 rounded-2xl shrink-0 ${
+                selectedEvent.resource.type === 'TICKET' ? 'bg-rose-500/20 text-rose-400 border border-rose-500/30' :
+                selectedEvent.resource.type === 'MEETING' ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30' :
+                'bg-purple-500/20 text-purple-400 border border-purple-500/30'
+              }`}>
+                <CalendarIcon className="w-8 h-8" />
+              </div>
+              <div>
+                <h3 className="text-2xl font-black text-white tracking-tight leading-tight">{selectedEvent.title}</h3>
+                <p className="text-sm font-bold uppercase tracking-widest text-white/40 mt-2">
+                  {selectedEvent.resource.type === 'TICKET' ? 'Ordem de Serviço' : 
+                   selectedEvent.resource.type === 'MEETING' ? 'Reunião' : 'Outro'}
+                </p>
+              </div>
             </div>
             
-            <div className="p-6 space-y-6">
-              <div className="flex items-start gap-4">
-                <div className={`p-3 rounded-lg ${
-                  selectedEvent.resource.type === 'TICKET' ? 'bg-red-50 text-red-600 dark:bg-red-900/20' :
-                  selectedEvent.resource.type === 'MEETING' ? 'bg-blue-50 text-blue-600 dark:bg-blue-900/20' :
-                  'bg-purple-50 text-purple-600 dark:bg-purple-900/20'
-                }`}>
-                  <CalendarIcon className="w-6 h-6" />
-                </div>
-                <div>
-                  <h3 className="font-bold text-lg text-gray-900 dark:text-white">{selectedEvent.title}</h3>
-                  <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                    {selectedEvent.resource.type === 'TICKET' ? 'Ordem de Serviço' : 
-                     selectedEvent.resource.type === 'MEETING' ? 'Reunião' : 'Outro'}
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-3 text-gray-600 dark:text-gray-300 bg-gray-50 dark:bg-zinc-800/50 p-4 rounded-lg">
-                <Clock className="w-5 h-5 text-gray-400" />
-                <div className="text-sm">
+            <div className="space-y-4">
+              <div className="flex items-center gap-4 text-white/70 bg-white/5 p-5 rounded-2xl border border-white/10">
+                <Clock className="w-6 h-6 text-white/30 shrink-0" />
+                <div className="text-lg font-medium">
                   {selectedEvent.allDay ? 'Dia Inteiro' : (
                     <>
                       {format(selectedEvent.start, "dd/MM/yyyy 'às' HH:mm")} <br/>
-                      <span className="text-gray-400">até</span> {format(selectedEvent.end, "dd/MM/yyyy 'às' HH:mm")}
+                      <span className="text-white/30 text-sm font-bold uppercase tracking-widest">até</span> {format(selectedEvent.end, "dd/MM/yyyy 'às' HH:mm")}
                     </>
                   )}
                 </div>
               </div>
 
               {selectedEvent.resource.notes && (
-                <div className="flex items-start gap-3 text-gray-600 dark:text-gray-300 p-4 bg-gray-50 dark:bg-zinc-800/50 rounded-lg">
-                  <AlignLeft className="w-5 h-5 text-gray-400 mt-0.5 shrink-0" />
-                  <p className="text-sm whitespace-pre-wrap">{selectedEvent.resource.notes}</p>
+                <div className="flex items-start gap-4 text-white/70 bg-white/5 p-5 rounded-2xl border border-white/10">
+                  <AlignLeft className="w-6 h-6 text-white/30 mt-1 shrink-0" />
+                  <p className="text-lg leading-relaxed whitespace-pre-wrap">{selectedEvent.resource.notes}</p>
                 </div>
               )}
+            </div>
 
-              <div className="pt-4 flex justify-end gap-2">
-                {selectedEvent.resource.type !== 'TICKET' && (
-                  <button 
-                    onClick={handleDelete}
-                    className="px-4 py-2 bg-red-600 text-white hover:bg-red-700 rounded-lg font-medium transition-colors"
-                  >
-                    Excluir
-                  </button>
-                )}
+            <div className="pt-6 flex justify-end gap-3">
+              {selectedEvent.resource.type !== 'TICKET' && (
                 <button 
-                  onClick={() => setSelectedEvent(null)}
-                  className="px-4 py-2 text-gray-700 dark:text-zinc-300 hover:bg-gray-100 dark:hover:bg-zinc-800 rounded-lg transition-colors"
+                  onClick={handleDelete}
+                  className="px-6 py-3 bg-rose-500/20 text-rose-400 hover:bg-rose-500/30 rounded-xl font-bold border border-rose-500/30 transition-all"
                 >
-                  Fechar
+                  Excluir
                 </button>
-              </div>
+              )}
+              <button 
+                onClick={() => setSelectedEvent(null)}
+                className="px-10 py-3 bg-white/10 hover:bg-white/20 text-white rounded-xl font-bold border border-white/30 transition-all"
+              >
+                Fechar
+              </button>
             </div>
           </div>
-        </div>
-      )}
+        )}
+      </Modal>
     </div>
   );
 }

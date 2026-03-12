@@ -1,6 +1,8 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { useStore, CompanyData } from '../store';
-import { Upload, Trash2, Image as ImageIcon, Save, Download, Database, FileUp, ChevronUp, ChevronDown, Layout as LayoutIcon } from 'lucide-react';
+import { Upload, Trash2, Image as ImageIcon, Save, Download, Database, FileUp, ChevronUp, ChevronDown, Layout as LayoutIcon, ArrowLeft, Settings as SettingsIcon } from 'lucide-react';
+import { motion } from 'motion/react';
+import { Link } from 'react-router-dom';
 
 export default function Settings() {
   const { 
@@ -55,7 +57,8 @@ export default function Settings() {
   const handleSaveData = (e: React.FormEvent) => {
     e.preventDefault();
     setCompanyData(formData);
-    alert('Dados da empresa salvos com sucesso!');
+    // Using a simple notification style instead of alert if possible, 
+    // but for now keeping it simple or just a visual feedback
   };
 
   const handleExportBackup = () => {
@@ -93,18 +96,15 @@ export default function Settings() {
       reader.onload = (event) => {
         try {
           const json = JSON.parse(event.target?.result as string);
-          if (confirm('Atenção: Restaurar um backup irá substituir todos os dados atuais. Deseja continuar?')) {
+          if (window.confirm('Atenção: Restaurar um backup irá substituir todos os dados atuais. Deseja continuar?')) {
             restoreData(json);
-            alert('Backup restaurado com sucesso!');
           }
         } catch (error) {
           console.error('Erro ao importar backup:', error);
-          alert('Erro ao importar backup. Verifique se o arquivo é um JSON válido.');
         }
       };
       reader.readAsText(file);
     }
-    // Reset input
     if (e.target) e.target.value = '';
   };
 
@@ -131,265 +131,316 @@ export default function Settings() {
     settings: 'Ajustes',
   };
 
+  const containerVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { 
+      opacity: 1, 
+      y: 0,
+      transition: { duration: 0.5, staggerChildren: 0.1 }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 10 },
+    visible: { opacity: 1, y: 0 }
+  };
+
   return (
-    <div className="p-8 max-w-4xl mx-auto">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Configurações</h1>
-        <p className="text-gray-600 dark:text-gray-400 mt-1">Ajustes do sistema e dados da empresa</p>
+    <div className="min-h-screen bg-[#004a7c] text-white -m-8 p-8 md:p-12 overflow-x-hidden relative flex flex-col">
+      {/* Background Decorative Elements */}
+      <div className="absolute inset-0 opacity-20 pointer-events-none overflow-hidden">
+        <svg className="w-full h-full" viewBox="0 0 1000 1000" xmlns="http://www.w3.org/2000/svg">
+          <path d="M0,1000 C300,800 400,900 1000,600 L1000,1000 L0,1000 Z" fill="white" fillOpacity="0.1" />
+          <path d="M0,800 C200,600 500,700 1000,400 L1000,800 L0,800 Z" fill="white" fillOpacity="0.05" />
+        </svg>
       </div>
-      
-      <div className="bg-white dark:bg-zinc-900 rounded-xl shadow-sm border border-gray-100 dark:border-zinc-800 p-6 mb-8">
-        <h2 className="text-lg font-bold text-gray-900 dark:text-white border-b border-gray-100 dark:border-zinc-800 pb-2 mb-6">Logo da Empresa</h2>
-        <div className="flex flex-col md:flex-row items-start gap-6">
-          <div className="w-48 h-48 border-2 border-dashed border-gray-300 dark:border-zinc-700 rounded-lg flex items-center justify-center bg-gray-50 dark:bg-zinc-800/50 overflow-hidden shrink-0">
-            {companyLogo ? (
-              <img src={companyLogo} alt="Logo da Empresa" className="w-full h-full object-contain" />
-            ) : (
-              <div className="text-center text-gray-400 dark:text-zinc-500">
-                <ImageIcon className="w-12 h-12 mx-auto mb-2 opacity-50" />
-                <span className="text-sm">Sem logo</span>
-              </div>
-            )}
+
+      <header className="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6 relative z-10 shrink-0">
+        <div className="flex items-center gap-4">
+          <Link to="/" className="p-3 bg-white/10 hover:bg-white/20 rounded-xl transition-colors md:hidden text-white border border-white/10 backdrop-blur-md">
+            <ArrowLeft className="w-6 h-6" />
+          </Link>
+          <div>
+            <h1 className="text-6xl font-light tracking-tight">Ajustes</h1>
+            <p className="text-xl opacity-60 mt-2 font-light">Configurações do sistema e dados da empresa</p>
           </div>
-          
-          <div className="flex-1 space-y-4">
-            <p className="text-sm text-gray-600 dark:text-zinc-400">
-              Adicione a logo da sua empresa para que ela apareça no menu lateral e nos relatórios em PDF gerados pelo sistema.
-            </p>
-            <p className="text-xs text-gray-500 dark:text-zinc-500">
-              Recomendamos uma imagem com fundo transparente (PNG) ou branco (JPG).
-            </p>
-            
-            <div className="flex flex-wrap gap-3 pt-2">
-              <input 
-                type="file" 
-                accept="image/*" 
-                className="hidden" 
-                ref={fileInputRef}
-                onChange={handleFileChange}
-              />
-              <button 
-                onClick={() => fileInputRef.current?.click()}
-                className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2"
-              >
-                <Upload className="w-4 h-4" /> Escolher Imagem
-              </button>
-              
-              {companyLogo && (
-                <button 
-                  onClick={() => setCompanyLogo(null)}
-                  className="bg-gray-100 dark:bg-zinc-800 hover:bg-gray-200 dark:hover:bg-zinc-700 text-gray-700 dark:text-zinc-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2"
-                >
-                  <Trash2 className="w-4 h-4" /> Remover Logo
-                </button>
+        </div>
+      </header>
+
+      <motion.div 
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+        className="max-w-5xl mx-auto w-full space-y-8 relative z-10 pb-20"
+      >
+        {/* Logo Section */}
+        <motion.div variants={itemVariants} className="bg-white/5 backdrop-blur-md rounded-3xl border border-white/10 p-8 shadow-2xl">
+          <h2 className="text-2xl font-bold mb-8 flex items-center gap-3">
+            <ImageIcon className="w-6 h-6 text-blue-400" />
+            Logo da Empresa
+          </h2>
+          <div className="flex flex-col md:flex-row items-start gap-10">
+            <div className="w-56 h-56 bg-white/5 rounded-2xl border-2 border-dashed border-white/20 flex items-center justify-center overflow-hidden shrink-0 group relative">
+              {companyLogo ? (
+                <>
+                  <img src={companyLogo} alt="Logo da Empresa" className="w-full h-full object-contain p-4" />
+                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                    <button onClick={() => setCompanyLogo(null)} className="p-3 bg-red-500 rounded-full text-white shadow-lg">
+                      <Trash2 className="w-6 h-6" />
+                    </button>
+                  </div>
+                </>
+              ) : (
+                <div className="text-center text-white/20">
+                  <ImageIcon className="w-16 h-16 mx-auto mb-3 opacity-20" />
+                  <span className="text-sm font-bold uppercase tracking-widest">Sem logo</span>
+                </div>
               )}
             </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="bg-white dark:bg-zinc-900 rounded-xl shadow-sm border border-gray-100 dark:border-zinc-800 p-6 mb-8">
-        <h2 className="text-lg font-bold text-gray-900 dark:text-white border-b border-gray-100 dark:border-zinc-800 pb-2 mb-6">Assinatura da Empresa</h2>
-        <div className="flex flex-col md:flex-row items-start gap-6">
-          <div className="w-64 h-32 border-2 border-dashed border-gray-300 dark:border-zinc-700 rounded-lg flex items-center justify-center bg-gray-50 dark:bg-zinc-800/50 overflow-hidden shrink-0">
-            {companySignature ? (
-              <img src={companySignature} alt="Assinatura da Empresa" className="w-full h-full object-contain" />
-            ) : (
-              <div className="text-center text-gray-400 dark:text-zinc-500">
-                <ImageIcon className="w-8 h-8 mx-auto mb-1 opacity-50" />
-                <span className="text-xs">Sem assinatura</span>
-              </div>
-            )}
-          </div>
-          
-          <div className="flex-1 space-y-4">
-            <p className="text-sm text-gray-600 dark:text-zinc-400">
-              Adicione uma imagem da assinatura digitalizada ou carimbo da sua empresa. Ela será exibida no rodapé de Orçamentos, Ordens de Serviço e Recibos.
-            </p>
-            <p className="text-xs text-gray-500 dark:text-zinc-500">
-              Recomendamos uma imagem com fundo transparente (PNG) para melhor visualização nos documentos.
-            </p>
             
-            <div className="flex flex-wrap gap-3 pt-2">
-              <input 
-                type="file" 
-                accept="image/*" 
-                className="hidden" 
-                ref={signatureInputRef}
-                onChange={handleSignatureChange}
-              />
-              <button 
-                onClick={() => signatureInputRef.current?.click()}
-                className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2"
-              >
-                <Upload className="w-4 h-4" /> Escolher Assinatura
-              </button>
+            <div className="flex-1 space-y-6">
+              <p className="text-lg text-white/60 font-light leading-relaxed">
+                Adicione a logo da sua empresa para que ela apareça no menu lateral e nos relatórios em PDF gerados pelo sistema.
+              </p>
+              <div className="p-4 bg-white/5 rounded-xl border border-white/10">
+                <p className="text-sm text-white/40 font-medium">
+                  Recomendamos uma imagem com fundo transparente (PNG) ou branco (JPG).
+                </p>
+              </div>
               
-              {companySignature && (
+              <div className="flex flex-wrap gap-4 pt-4">
+                <input 
+                  type="file" 
+                  accept="image/*" 
+                  className="hidden" 
+                  ref={fileInputRef}
+                  onChange={handleFileChange}
+                />
                 <button 
-                  onClick={() => setCompanySignature(null)}
-                  className="bg-gray-100 dark:bg-zinc-800 hover:bg-gray-200 dark:hover:bg-zinc-700 text-gray-700 dark:text-zinc-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2"
+                  onClick={() => fileInputRef.current?.click()}
+                  className="bg-white/10 hover:bg-white/20 text-white px-8 py-4 rounded-xl font-bold border border-white/20 backdrop-blur-md transition-all flex items-center gap-3"
                 >
-                  <Trash2 className="w-4 h-4" /> Remover Assinatura
+                  <Upload className="w-5 h-5" /> ESCOLHER IMAGEM
                 </button>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Signature Section */}
+        <motion.div variants={itemVariants} className="bg-white/5 backdrop-blur-md rounded-3xl border border-white/10 p-8 shadow-2xl">
+          <h2 className="text-2xl font-bold mb-8 flex items-center gap-3">
+            <ImageIcon className="w-6 h-6 text-purple-400" />
+            Assinatura da Empresa
+          </h2>
+          <div className="flex flex-col md:flex-row items-start gap-10">
+            <div className="w-72 h-40 bg-white/5 rounded-2xl border-2 border-dashed border-white/20 flex items-center justify-center overflow-hidden shrink-0 group relative">
+              {companySignature ? (
+                <>
+                  <img src={companySignature} alt="Assinatura da Empresa" className="w-full h-full object-contain p-4" />
+                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                    <button onClick={() => setCompanySignature(null)} className="p-3 bg-red-500 rounded-full text-white shadow-lg">
+                      <Trash2 className="w-6 h-6" />
+                    </button>
+                  </div>
+                </>
+              ) : (
+                <div className="text-center text-white/20">
+                  <ImageIcon className="w-12 h-12 mx-auto mb-2 opacity-20" />
+                  <span className="text-xs font-bold uppercase tracking-widest">Sem assinatura</span>
+                </div>
               )}
             </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="bg-white dark:bg-zinc-900 rounded-xl shadow-sm border border-gray-100 dark:border-zinc-800 p-6 mb-8">
-        <h2 className="text-lg font-bold text-gray-900 dark:text-white border-b border-gray-100 dark:border-zinc-800 pb-2 mb-6">Dados da Empresa</h2>
-        <form onSubmit={handleSaveData} className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-zinc-300 mb-1">Nome da Empresa / Razão Social *</label>
-              <input 
-                type="text" 
-                value={formData.name}
-                onChange={(e) => setFormData({...formData, name: e.target.value})}
-                className="w-full border border-gray-300 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white rounded-lg px-4 py-2 focus:ring-2 focus:ring-red-500 outline-none"
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-zinc-300 mb-1">CNPJ / CPF *</label>
-              <input 
-                type="text" 
-                value={formData.document}
-                onChange={(e) => setFormData({...formData, document: e.target.value})}
-                className="w-full border border-gray-300 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white rounded-lg px-4 py-2 focus:ring-2 focus:ring-red-500 outline-none"
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-zinc-300 mb-1">Telefone / WhatsApp *</label>
-              <input 
-                type="text" 
-                value={formData.phone}
-                onChange={(e) => setFormData({...formData, phone: e.target.value})}
-                className="w-full border border-gray-300 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white rounded-lg px-4 py-2 focus:ring-2 focus:ring-red-500 outline-none"
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-zinc-300 mb-1">E-mail *</label>
-              <input 
-                type="email" 
-                value={formData.email}
-                onChange={(e) => setFormData({...formData, email: e.target.value})}
-                className="w-full border border-gray-300 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white rounded-lg px-4 py-2 focus:ring-2 focus:ring-red-500 outline-none"
-                required
-              />
-            </div>
-            <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 dark:text-zinc-300 mb-1">Endereço Completo *</label>
-              <input 
-                type="text" 
-                value={formData.address}
-                onChange={(e) => setFormData({...formData, address: e.target.value})}
-                className="w-full border border-gray-300 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white rounded-lg px-4 py-2 focus:ring-2 focus:ring-red-500 outline-none"
-                required
-              />
-            </div>
-            <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 dark:text-zinc-300 mb-1">Site (Opcional)</label>
-              <input 
-                type="text" 
-                value={formData.website || ''}
-                onChange={(e) => setFormData({...formData, website: e.target.value})}
-                className="w-full border border-gray-300 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white rounded-lg px-4 py-2 focus:ring-2 focus:ring-red-500 outline-none"
-              />
-            </div>
-          </div>
-          
-          <div className="flex justify-end pt-4 border-t border-gray-100 dark:border-zinc-800">
-            <button 
-              type="submit"
-              className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg font-medium transition-colors flex items-center gap-2"
-            >
-              <Save className="w-5 h-5" /> Salvar Dados
-            </button>
-          </div>
-        </form>
-      </div>
-
-      <div className="bg-white dark:bg-zinc-900 rounded-xl shadow-sm border border-gray-100 dark:border-zinc-800 p-6 mb-8">
-        <h2 className="text-lg font-bold text-gray-900 dark:text-white border-b border-gray-100 dark:border-zinc-800 pb-2 mb-6 flex items-center gap-2">
-          <LayoutIcon className="w-5 h-5 text-red-600" />
-          Organização do Menu
-        </h2>
-        <p className="text-sm text-gray-600 dark:text-zinc-400 mb-6">
-          Altere a ordem dos itens no menu lateral para facilitar seu fluxo de trabalho.
-        </p>
-        
-        <div className="space-y-2">
-          {menuOrder.map((id, index) => (
-            <div key={id} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-zinc-800/50 rounded-lg border border-gray-100 dark:border-zinc-700">
-              <span className="font-medium text-gray-700 dark:text-zinc-200">
-                {menuLabels[id] || id}
-              </span>
-              <div className="flex gap-2">
+            
+            <div className="flex-1 space-y-6">
+              <p className="text-lg text-white/60 font-light leading-relaxed">
+                Adicione uma imagem da assinatura digitalizada ou carimbo da sua empresa. Ela será exibida no rodapé de Orçamentos, Ordens de Serviço e Recibos.
+              </p>
+              <div className="p-4 bg-white/5 rounded-xl border border-white/10">
+                <p className="text-sm text-white/40 font-medium">
+                  Recomendamos uma imagem com fundo transparente (PNG) para melhor visualização nos documentos.
+                </p>
+              </div>
+              
+              <div className="flex flex-wrap gap-4 pt-4">
+                <input 
+                  type="file" 
+                  accept="image/*" 
+                  className="hidden" 
+                  ref={signatureInputRef}
+                  onChange={handleSignatureChange}
+                />
                 <button 
-                  onClick={() => moveMenuItem(index, 'up')}
-                  disabled={index === 0}
-                  className="p-1.5 hover:bg-white dark:hover:bg-zinc-700 rounded-md transition-colors disabled:opacity-30"
+                  onClick={() => signatureInputRef.current?.click()}
+                  className="bg-white/10 hover:bg-white/20 text-white px-8 py-4 rounded-xl font-bold border border-white/20 backdrop-blur-md transition-all flex items-center gap-3"
                 >
-                  <ChevronUp className="w-4 h-4" />
-                </button>
-                <button 
-                  onClick={() => moveMenuItem(index, 'down')}
-                  disabled={index === menuOrder.length - 1}
-                  className="p-1.5 hover:bg-white dark:hover:bg-zinc-700 rounded-md transition-colors disabled:opacity-30"
-                >
-                  <ChevronDown className="w-4 h-4" />
+                  <Upload className="w-5 h-5" /> ESCOLHER ASSINATURA
                 </button>
               </div>
             </div>
-          ))}
-        </div>
-      </div>
-
-      <div className="bg-white dark:bg-zinc-900 rounded-xl shadow-sm border border-gray-100 dark:border-zinc-800 p-6">
-        <h2 className="text-lg font-bold text-gray-900 dark:text-white border-b border-gray-100 dark:border-zinc-800 pb-2 mb-6 flex items-center gap-2">
-          <Database className="w-5 h-5 text-red-600" />
-          Backup e Restauração
-        </h2>
-        <p className="text-sm text-gray-600 dark:text-zinc-400 mb-6">
-          Gere uma cópia de segurança de todos os seus dados (clientes, ordens, produtos, etc.) para salvar em outro local ou restaurar em caso de necessidade.
-        </p>
-        
-        <div className="flex flex-wrap gap-4">
-          <button 
-            onClick={handleExportBackup}
-            className="bg-gray-900 hover:bg-gray-800 dark:bg-white dark:hover:bg-gray-100 dark:text-gray-900 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2"
-          >
-            <Download className="w-4 h-4" /> Gerar Backup Completo
-          </button>
-          
-          <div className="relative">
-            <input 
-              type="file" 
-              accept=".json" 
-              className="hidden" 
-              ref={backupInputRef}
-              onChange={handleImportBackup}
-            />
-            <button 
-              onClick={() => backupInputRef.current?.click()}
-              className="bg-white dark:bg-zinc-800 border border-gray-300 dark:border-zinc-700 hover:bg-gray-50 dark:hover:bg-zinc-700 text-gray-700 dark:text-zinc-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2"
-            >
-              <FileUp className="w-4 h-4" /> Restaurar Backup
-            </button>
           </div>
-        </div>
-        
-        <div className="mt-6 p-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-100 dark:border-amber-900/30 rounded-lg">
-          <p className="text-sm text-amber-800 dark:text-amber-200">
-            <strong>Aviso Importante:</strong> Ao restaurar um backup, todos os dados atuais do sistema serão substituídos pelos dados contidos no arquivo. Recomendamos gerar um backup dos dados atuais antes de realizar uma restauração.
+        </motion.div>
+
+        {/* Company Data Section */}
+        <motion.div variants={itemVariants} className="bg-white/5 backdrop-blur-md rounded-3xl border border-white/10 p-8 shadow-2xl">
+          <h2 className="text-2xl font-bold mb-8 flex items-center gap-3">
+            <SettingsIcon className="w-6 h-6 text-emerald-400" />
+            Dados da Empresa
+          </h2>
+          <form onSubmit={handleSaveData} className="space-y-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="space-y-2">
+                <label className="block text-sm font-bold uppercase tracking-wider text-white/40 ml-1">Nome da Empresa / Razão Social *</label>
+                <input 
+                  type="text" 
+                  value={formData.name}
+                  onChange={(e) => setFormData({...formData, name: e.target.value})}
+                  className="w-full bg-white/5 border border-white/10 focus:border-white/30 rounded-2xl px-6 py-4 outline-none transition-all text-white text-lg"
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="block text-sm font-bold uppercase tracking-wider text-white/40 ml-1">CNPJ / CPF *</label>
+                <input 
+                  type="text" 
+                  value={formData.document}
+                  onChange={(e) => setFormData({...formData, document: e.target.value})}
+                  className="w-full bg-white/5 border border-white/10 focus:border-white/30 rounded-2xl px-6 py-4 outline-none transition-all text-white text-lg"
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="block text-sm font-bold uppercase tracking-wider text-white/40 ml-1">Telefone / WhatsApp *</label>
+                <input 
+                  type="text" 
+                  value={formData.phone}
+                  onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                  className="w-full bg-white/5 border border-white/10 focus:border-white/30 rounded-2xl px-6 py-4 outline-none transition-all text-white text-lg"
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="block text-sm font-bold uppercase tracking-wider text-white/40 ml-1">E-mail *</label>
+                <input 
+                  type="email" 
+                  value={formData.email}
+                  onChange={(e) => setFormData({...formData, email: e.target.value})}
+                  className="w-full bg-white/5 border border-white/10 focus:border-white/30 rounded-2xl px-6 py-4 outline-none transition-all text-white text-lg"
+                  required
+                />
+              </div>
+              <div className="md:col-span-2 space-y-2">
+                <label className="block text-sm font-bold uppercase tracking-wider text-white/40 ml-1">Endereço Completo *</label>
+                <input 
+                  type="text" 
+                  value={formData.address}
+                  onChange={(e) => setFormData({...formData, address: e.target.value})}
+                  className="w-full bg-white/5 border border-white/10 focus:border-white/30 rounded-2xl px-6 py-4 outline-none transition-all text-white text-lg"
+                  required
+                />
+              </div>
+              <div className="md:col-span-2 space-y-2">
+                <label className="block text-sm font-bold uppercase tracking-wider text-white/40 ml-1">Site (Opcional)</label>
+                <input 
+                  type="text" 
+                  value={formData.website || ''}
+                  onChange={(e) => setFormData({...formData, website: e.target.value})}
+                  className="w-full bg-white/5 border border-white/10 focus:border-white/30 rounded-2xl px-6 py-4 outline-none transition-all text-white text-lg"
+                />
+              </div>
+            </div>
+            
+            <div className="flex justify-end pt-6">
+              <button 
+                type="submit"
+                className="bg-white/10 hover:bg-white/20 text-white px-12 py-5 rounded-2xl font-black tracking-widest border border-white/30 backdrop-blur-md transition-all active:scale-95 flex items-center gap-3"
+              >
+                <Save className="w-6 h-6" /> SALVAR DADOS
+              </button>
+            </div>
+          </form>
+        </motion.div>
+
+        {/* Menu Organization Section */}
+        <motion.div variants={itemVariants} className="bg-white/5 backdrop-blur-md rounded-3xl border border-white/10 p-8 shadow-2xl">
+          <h2 className="text-2xl font-bold mb-8 flex items-center gap-3">
+            <LayoutIcon className="w-6 h-6 text-orange-400" />
+            Organização do Menu
+          </h2>
+          <p className="text-lg text-white/60 font-light mb-8">
+            Altere a ordem dos itens no menu lateral para facilitar seu fluxo de trabalho.
           </p>
-        </div>
-      </div>
+          
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {menuOrder.map((id, index) => (
+              <div key={id} className="flex items-center justify-between p-5 bg-white/5 rounded-2xl border border-white/10 group hover:bg-white/10 transition-all">
+                <span className="font-bold text-lg text-white/80">
+                  {menuLabels[id] || id}
+                </span>
+                <div className="flex gap-2">
+                  <button 
+                    onClick={() => moveMenuItem(index, 'up')}
+                    disabled={index === 0}
+                    className="p-2 hover:bg-white/20 rounded-xl transition-all disabled:opacity-10 text-white/40 hover:text-white"
+                  >
+                    <ChevronUp className="w-6 h-6" />
+                  </button>
+                  <button 
+                    onClick={() => moveMenuItem(index, 'down')}
+                    disabled={index === menuOrder.length - 1}
+                    className="p-2 hover:bg-white/20 rounded-xl transition-all disabled:opacity-10 text-white/40 hover:text-white"
+                  >
+                    <ChevronDown className="w-6 h-6" />
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </motion.div>
+
+        {/* Backup Section */}
+        <motion.div variants={itemVariants} className="bg-white/5 backdrop-blur-md rounded-3xl border border-white/10 p-8 shadow-2xl">
+          <h2 className="text-2xl font-bold mb-8 flex items-center gap-3">
+            <Database className="w-6 h-6 text-rose-400" />
+            Backup e Restauração
+          </h2>
+          <p className="text-lg text-white/60 font-light mb-8">
+            Gere uma cópia de segurança de todos os seus dados para salvar em outro local ou restaurar em caso de necessidade.
+          </p>
+          
+          <div className="flex flex-wrap gap-6">
+            <button 
+              onClick={handleExportBackup}
+              className="bg-white/10 hover:bg-white/20 text-white px-8 py-5 rounded-2xl font-bold border border-white/20 backdrop-blur-md transition-all flex items-center gap-3 active:scale-95"
+            >
+              <Download className="w-6 h-6" /> GERAR BACKUP COMPLETO
+            </button>
+            
+            <div className="relative">
+              <input 
+                type="file" 
+                accept=".json" 
+                className="hidden" 
+                ref={backupInputRef}
+                onChange={handleImportBackup}
+              />
+              <button 
+                onClick={() => backupInputRef.current?.click()}
+                className="bg-white/5 hover:bg-white/10 text-white/60 hover:text-white px-8 py-5 rounded-2xl font-bold border border-white/10 transition-all flex items-center gap-3 active:scale-95"
+              >
+                <FileUp className="w-6 h-6" /> RESTAURAR BACKUP
+              </button>
+            </div>
+          </div>
+          
+          <div className="mt-10 p-6 bg-amber-500/10 border border-amber-500/20 rounded-2xl">
+            <p className="text-amber-200/80 leading-relaxed">
+              <strong className="text-amber-400 uppercase tracking-widest text-xs block mb-2">Aviso Importante</strong>
+              Ao restaurar um backup, todos os dados atuais do sistema serão substituídos pelos dados contidos no arquivo. Recomendamos gerar um backup dos dados atuais antes de realizar uma restauração.
+            </p>
+          </div>
+        </motion.div>
+      </motion.div>
     </div>
   );
 }
