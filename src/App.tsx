@@ -17,6 +17,7 @@ import Financial from './pages/Financial';
 import Calendar from './pages/Calendar';
 import Products from './pages/Products';
 import Login from './pages/Login';
+import Weather from './pages/Weather';
 
 function Layout({ children }: { children: React.ReactNode }) {
   const { theme, toggleTheme, isAuthenticated, logout } = useStore();
@@ -109,6 +110,7 @@ export default function App() {
           <Route path="/tickets/:id/edit" element={<TicketForm />} />
           <Route path="/tickets/:id" element={<TicketView />} />
           <Route path="/settings" element={<Settings />} />
+          <Route path="/weather" element={<Weather />} />
         </Routes>
       </Layout>
     </HashRouter>

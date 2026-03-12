@@ -106,6 +106,18 @@ export default function Dashboard() {
           </div>
         </Link>
 
+        {/* Recibos - Square Tile */}
+        <Link to="/receipts" className="col-span-1 bg-gradient-to-br from-[#f0a30a] to-[#d38b00] hover:brightness-110 transition-all p-4 flex flex-col justify-between aspect-square group relative overflow-hidden border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.3)] active:scale-95 hover:-translate-y-1 hover:shadow-xl">
+          <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-white/20 pointer-events-none" />
+          <div className="flex justify-center items-center h-full relative z-10">
+            <FileText className="w-12 h-12 text-white drop-shadow-lg group-hover:scale-110 transition-transform duration-500" />
+          </div>
+          <div className="flex justify-between items-end relative z-10">
+            <span className="text-[10px] font-bold uppercase tracking-wider drop-shadow-md">Recibos</span>
+            <span className="text-2xl font-light drop-shadow-lg">{receipts.length}</span>
+          </div>
+        </Link>
+
         {/* Financeiro - Wide Tile */}
         <Link to="/financial" className="col-span-2 bg-gradient-to-br from-[#00a300] to-[#008000] hover:brightness-110 transition-all p-4 flex flex-col justify-between aspect-[2/1] group relative overflow-hidden border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.3)] active:scale-95 hover:-translate-y-1 hover:shadow-xl">
           <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-white/20 pointer-events-none" />
@@ -139,7 +151,7 @@ export default function Dashboard() {
         </Link>
 
         {/* Clima - Wide Tile */}
-        <div className="col-span-2 bg-gradient-to-br from-[#0078d7] to-[#005a9e] hover:brightness-110 transition-all p-4 flex flex-col justify-between aspect-[2/1] group relative overflow-hidden border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.3)] active:scale-95 hover:-translate-y-1 hover:shadow-xl cursor-default">
+        <Link to="/weather" className="col-span-2 bg-gradient-to-br from-[#0078d7] to-[#005a9e] hover:brightness-110 transition-all p-4 flex flex-col justify-between aspect-[2/1] group relative overflow-hidden border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.3)] active:scale-95 hover:-translate-y-1 hover:shadow-xl">
           <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-white/20 pointer-events-none" />
           <div className="flex items-center gap-6 h-full relative z-10">
             <div className="relative group-hover:scale-110 transition-transform duration-500">
@@ -147,16 +159,16 @@ export default function Dashboard() {
               <CloudSun className="w-10 h-10 text-white absolute -bottom-1 -right-1 drop-shadow-lg" />
             </div>
             <div>
-              <span className="text-5xl font-light drop-shadow-lg">26°</span>
+              <span className="text-5xl font-light drop-shadow-lg">31°</span>
               <div className="mt-1">
-                <p className="text-sm font-bold uppercase tracking-wider drop-shadow-md">São Paulo</p>
+                <p className="text-sm font-bold uppercase tracking-wider drop-shadow-md">Rio de Janeiro</p>
                 <p className="text-xs opacity-80 drop-shadow-sm">Ensolarado (claro)</p>
-                <p className="text-[10px] opacity-60">26° / 13°</p>
+                <p className="text-[10px] opacity-60">33° / 24°</p>
               </div>
             </div>
           </div>
           <span className="text-[11px] font-bold uppercase tracking-wider relative z-10 drop-shadow-md">Clima</span>
-        </div>
+        </Link>
 
         {/* Ações Rápidas - Square Tile with 4 inside */}
         <div className="col-span-1 aspect-square grid grid-cols-2 grid-rows-2 gap-1 perspective-1000">
