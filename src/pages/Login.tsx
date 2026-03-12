@@ -1,143 +1,125 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useStore } from '../store';
-import { Wrench, ArrowRight, Lock, User, AlertCircle } from 'lucide-react';
-import { motion, AnimatePresence } from 'motion/react';
+import { ArrowRight, Power, Accessibility, User } from 'lucide-react';
+import { motion } from 'motion/react';
 
 export default function Login() {
-  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
   const login = useStore((state) => state.login);
   const companyLogo = useStore((state) => state.companyLogo);
+  const [time, setTime] = useState(new Date());
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  useEffect(() => {
+    const timer = setInterval(() => setTime(new Date()), 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError(false);
 
-    // Simulate a small delay for the "Apple" feel
+    // Windows 8 style login usually has a small delay
     setTimeout(() => {
-      const success = login(username, password);
+      const success = login('admin', password);
       if (!success) {
         setError(true);
         setLoading(false);
+        setPassword('');
       }
-    }, 800);
+    }, 600);
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-6 font-sans selection:bg-blue-100 relative overflow-hidden">
-      {/* Background Image with Blur */}
-      <div 
-        className="absolute inset-0 z-0"
-        style={{
-          backgroundImage: 'url("https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80&w=2000")',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-        }}
-      >
-        <div className="absolute inset-0 bg-white/40 backdrop-blur-[20px]" />
-      </div>
-
-      {/* Background decorative elements */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none z-1">
-        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-100 rounded-full blur-[120px] opacity-40" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-red-100 rounded-full blur-[120px] opacity-20" />
+    <div className="min-h-screen bg-[#004a7c] text-white flex flex-col items-center justify-center font-sans overflow-hidden relative">
+      {/* Background Curves (Subtle) */}
+      <div className="absolute inset-0 opacity-10 pointer-events-none">
+        <svg className="w-full h-full" viewBox="0 0 1000 1000" xmlns="http://www.w3.org/2000/svg">
+          <path d="M0,1000 C300,800 400,900 1000,600 L1000,1000 L0,1000 Z" fill="white" />
+          <path d="M0,800 C200,600 500,700 1000,400 L1000,800 L0,800 Z" fill="white" />
+        </svg>
       </div>
 
       <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-        className="w-full max-w-[400px] relative z-10"
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.5 }}
+        className="flex flex-col items-center z-10"
       >
-        <div className="text-center mb-12">
-          <motion.div 
-            initial={{ scale: 0.8 }}
-            animate={{ scale: 1 }}
-            transition={{ duration: 0.5 }}
-            className="inline-flex items-center justify-center w-20 h-20 bg-white rounded-[22px] shadow-[0_10px_40px_rgba(0,0,0,0.04)] border border-white mb-8 overflow-hidden"
-          >
-            {companyLogo ? (
-              <img src={companyLogo} alt="Logo" className="w-full h-full object-contain p-2" />
-            ) : (
-              <Wrench className="w-10 h-10 text-zinc-900" />
-            )}
-          </motion.div>
-          <h1 className="text-[32px] font-semibold tracking-tight text-zinc-900 mb-2">IA COMPANY TEC</h1>
-          <p className="text-zinc-500 text-lg font-medium">Inicie sua sessão para continuar.</p>
+        {/* User Avatar */}
+        <div className="w-48 h-48 rounded-full bg-white/10 border-4 border-white/20 flex items-center justify-center overflow-hidden mb-6 shadow-2xl relative group">
+          {companyLogo ? (
+            <img src={companyLogo} alt="User" className="w-full h-full object-cover" />
+          ) : (
+            <User className="w-24 h-24 text-white/40" />
+          )}
+          {loading && (
+            <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
+              <div className="w-12 h-12 border-4 border-white/30 border-t-white rounded-full animate-spin" />
+            </div>
+          )}
         </div>
 
-        <div className="bg-white/80 backdrop-blur-xl rounded-[32px] p-8 shadow-[0_20px_60px_rgba(0,0,0,0.05)] border border-white/40">
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="space-y-4">
-              <div className="relative group">
-                <div className="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">
-                  <User className="h-5 w-5 text-zinc-400 group-focus-within:text-zinc-900 transition-colors" />
-                </div>
-                <input
-                  type="text"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  placeholder="Usuário"
-                  className="block w-full pl-12 pr-5 py-4 bg-zinc-100/50 border-none rounded-2xl text-zinc-900 placeholder:text-zinc-400 focus:ring-2 focus:ring-zinc-900/5 transition-all outline-none font-medium"
-                  required
-                />
-              </div>
+        {/* User Name */}
+        <h1 className="text-4xl font-light mb-8 tracking-tight">Administrador</h1>
 
-              <div className="relative group">
-                <div className="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">
-                  <Lock className="h-5 w-5 text-zinc-400 group-focus-within:text-zinc-900 transition-colors" />
-                </div>
-                <input
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Senha"
-                  className="block w-full pl-12 pr-5 py-4 bg-zinc-100/50 border-none rounded-2xl text-zinc-900 placeholder:text-zinc-400 focus:ring-2 focus:ring-zinc-900/5 transition-all outline-none font-medium"
-                  required
-                />
-              </div>
-            </div>
-
-            <AnimatePresence>
-              {error && (
-                <motion.div 
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: 'auto' }}
-                  exit={{ opacity: 0, height: 0 }}
-                  className="flex items-center gap-2 text-red-500 text-sm font-semibold px-2"
-                >
-                  <AlertCircle className="w-4 h-4" />
-                  <span>Credenciais inválidas. Tente novamente.</span>
-                </motion.div>
-              )}
-            </AnimatePresence>
-
-            <button
+        {/* Login Form */}
+        <form onSubmit={handleSubmit} className="w-full max-w-[320px] relative">
+          <div className="relative flex items-center">
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Senha"
+              autoFocus
+              className={`w-full bg-white/10 border-2 ${error ? 'border-red-500' : 'border-white/30'} focus:border-white/60 outline-none px-4 py-2.5 pr-12 text-lg transition-all placeholder:text-white/40`}
+              required
+            />
+            <button 
               type="submit"
               disabled={loading}
-              className="w-full bg-zinc-900 text-white py-4 rounded-2xl font-bold text-lg shadow-[0_10px_30px_rgba(0,0,0,0.15)] hover:shadow-[0_15px_40px_rgba(0,0,0,0.2)] hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:hover:scale-100"
+              className="absolute right-1 w-10 h-10 bg-white/20 hover:bg-white/30 active:bg-white/40 flex items-center justify-center transition-colors disabled:opacity-50"
             >
-              {loading ? (
-                <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-              ) : (
-                <>
-                  Acessar Sistema
-                  <ArrowRight className="w-5 h-5" />
-                </>
-              )}
+              <ArrowRight className="w-6 h-6" />
             </button>
-          </form>
-        </div>
+          </div>
+          
+          {error && (
+            <motion.p 
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-red-400 text-sm mt-3 text-center font-medium"
+            >
+              A senha está incorreta. Tente novamente.
+            </motion.p>
+          )}
+        </form>
 
-        <div className="mt-12 text-center">
-          <p className="text-zinc-400 text-sm font-medium">
-            © {new Date().getFullYear()} IA COMPANY TEC Cloud. Todos os direitos reservados.
-          </p>
-        </div>
+        {/* Hint */}
+        <p className="mt-8 text-white/40 text-sm font-medium">Dica: admin / 123</p>
       </motion.div>
+
+      {/* Bottom Icons */}
+      <div className="absolute bottom-10 right-10 flex gap-6 z-10">
+        <button className="p-2 hover:bg-white/10 rounded-full transition-colors" title="Facilidade de Acesso">
+          <Accessibility className="w-8 h-8 opacity-60" />
+        </button>
+        <button className="p-2 hover:bg-white/10 rounded-full transition-colors" title="Ligar/Desligar">
+          <Power className="w-8 h-8 opacity-60" />
+        </button>
+      </div>
+
+      {/* Date/Time (Bottom Left) */}
+      <div className="absolute bottom-10 left-10 text-left z-10">
+        <div className="text-7xl font-light mb-2">
+          {time.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
+        </div>
+        <div className="text-2xl font-light opacity-80">
+          {time.toLocaleDateString('pt-BR', { weekday: 'long', day: '2-digit', month: 'long' })}
+        </div>
+      </div>
     </div>
   );
 }
