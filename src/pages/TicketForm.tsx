@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, Link } from 'react-router-dom';
 import { useStore, TicketType, TicketStatus } from '../store';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Save, X, ClipboardList, Info, Wrench, ShieldAlert, Clock, CheckCircle2, AlertCircle, HelpCircle } from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
 
 export default function TicketForm() {
   const navigate = useNavigate();
@@ -97,210 +98,269 @@ export default function TicketForm() {
 
   const categories = Array.from(new Set(filteredChecklistItems.map(item => item.category)));
 
+  const containerVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { 
+      opacity: 1, 
+      y: 0,
+      transition: { duration: 0.5, staggerChildren: 0.1 }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 10 },
+    visible: { opacity: 1, y: 0 }
+  };
+
   return (
-    <div className="max-w-4xl mx-auto">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
-        <div className="flex items-center gap-4">
-          <button 
-            onClick={() => navigate(-1)}
-            className="p-2 text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-zinc-800 rounded-lg transition-colors"
-          >
-            <ArrowLeft className="w-5 h-5" />
-          </button>
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-              {id ? 'Editar Ordem de Serviço' : 'Nova Ordem de Serviço'}
-            </h1>
-            <p className="text-gray-600 dark:text-gray-400 mt-1">Preencha os dados da OS</p>
-          </div>
-        </div>
+    <div className="min-h-screen bg-[#004a7c] text-white -m-8 p-8 md:p-12 overflow-x-hidden relative flex flex-col">
+      {/* Background Decorative Elements */}
+      <div className="absolute inset-0 opacity-20 pointer-events-none overflow-hidden">
+        <svg className="w-full h-full" viewBox="0 0 1000 1000" xmlns="http://www.w3.org/2000/svg">
+          <path d="M0,1000 C300,800 400,900 1000,600 L1000,1000 L0,1000 Z" fill="white" fillOpacity="0.1" />
+          <path d="M0,800 C200,600 500,700 1000,400 L1000,800 L0,800 Z" fill="white" fillOpacity="0.05" />
+        </svg>
       </div>
 
-      <form onSubmit={handleSubmit} className="bg-white dark:bg-zinc-900 rounded-xl shadow-sm border border-gray-100 dark:border-zinc-800 p-6 space-y-8">
-        {/* Informações Básicas */}
-        <div className="space-y-6">
-          <h2 className="text-lg font-bold text-gray-900 dark:text-white border-b border-gray-100 dark:border-zinc-800 pb-2">Informações Básicas</h2>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Título da Tarefa</label>
-              <input 
-                type="text"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                className="w-full bg-gray-50 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 text-gray-900 dark:text-white rounded-lg px-4 py-2.5 outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
-                placeholder="Ex: Manutenção do Ar Condicionado"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Tipo de Ordem de Serviço</label>
-              <select 
-                value={type}
-                onChange={(e) => setType(e.target.value as TicketType)}
-                className="w-full bg-gray-50 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 text-gray-900 dark:text-white rounded-lg px-4 py-2.5 outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
-              >
-                <option value="CORRETIVA">Manutenção Corretiva</option>
-                <option value="PREVENTIVA">Manutenção Preventiva</option>
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Status</label>
-              <select 
-                value={status}
-                onChange={(e) => setStatus(e.target.value as TicketStatus)}
-                className="w-full bg-gray-50 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 text-gray-900 dark:text-white rounded-lg px-4 py-2.5 outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
-              >
-                <option value="APROVADO">Aprovado</option>
-                <option value="AGUARDANDO_MATERIAL">Aguardando Material</option>
-                <option value="REALIZANDO">Realizando</option>
-                <option value="CONCLUIDO">Concluído</option>
-              </select>
-            </div>
-            
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Cliente / Condomínio</label>
-              <select 
-                value={clientId}
-                onChange={(e) => setClientId(e.target.value)}
-                className="w-full bg-gray-50 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 text-gray-900 dark:text-white rounded-lg px-4 py-2.5 outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
-              >
-                <option value="">Selecione um cliente...</option>
-                {clients.map(client => (
-                  <option key={client.id} value={client.id}>{client.name}</option>
-                ))}
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Data</label>
-              <input 
-                type="date"
-                value={date}
-                onChange={(e) => setDate(e.target.value)}
-                className="w-full bg-gray-50 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 text-gray-900 dark:text-white rounded-lg px-4 py-2.5 outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Técnico Responsável</label>
-              <input 
-                type="text"
-                value={technician}
-                onChange={(e) => setTechnician(e.target.value)}
-                className="w-full bg-gray-50 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 text-gray-900 dark:text-white rounded-lg px-4 py-2.5 outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
-                placeholder="Nome do técnico"
-              />
-            </div>
+      <header className="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6 relative z-10 shrink-0">
+        <div className="flex items-center gap-6">
+          <Link to="/tickets" className="p-4 bg-white/10 hover:bg-white/20 rounded-2xl transition-all text-white border border-white/10 backdrop-blur-md shadow-xl active:scale-95">
+            <ArrowLeft className="w-8 h-8" />
+          </Link>
+          <div>
+            <h1 className="text-6xl font-light tracking-tight">
+              {id ? 'Editar OS' : 'Nova OS'}
+            </h1>
+            <p className="text-xl opacity-60 mt-2 font-light">Preencha os dados da Ordem de Serviço</p>
           </div>
         </div>
+      </header>
 
-        {/* Campos Específicos */}
-        {type === 'CORRETIVA' ? (
-          <div className="space-y-4">
-            <h2 className="text-lg font-bold text-gray-900 dark:text-white border-b border-gray-100 dark:border-zinc-800 pb-2">Detalhes da Corretiva</h2>
+      <motion.div 
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+        className="max-w-5xl mx-auto w-full relative z-10 pb-20"
+      >
+        <form onSubmit={handleSubmit} className="space-y-10">
+          {/* Informações Básicas */}
+          <motion.div variants={itemVariants} className="bg-white/5 backdrop-blur-md rounded-[2.5rem] border border-white/10 p-10 shadow-2xl">
+            <h2 className="text-2xl font-bold mb-10 flex items-center gap-3">
+              <Info className="w-6 h-6 text-blue-400" />
+              Informações Básicas
+            </h2>
             
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Problema Relatado</label>
-              <textarea 
-                value={reportedProblem}
-                onChange={(e) => setReportedProblem(e.target.value)}
-                className="w-full bg-gray-50 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 text-gray-900 dark:text-white rounded-lg px-4 py-2.5 outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all min-h-[80px]"
-              />
-            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+              <div className="md:col-span-2 space-y-3">
+                <label className="block text-sm font-bold uppercase tracking-widest text-white/40 ml-1">Título da Tarefa</label>
+                <input 
+                  type="text"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  className="w-full bg-white/5 border border-white/10 focus:border-white/30 rounded-2xl px-6 py-5 outline-none transition-all text-white text-xl placeholder:text-white/10"
+                  placeholder="Ex: Manutenção do Ar Condicionado"
+                />
+              </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Produtos para Orçamento</label>
-              <textarea 
-                value={productsForQuote}
-                onChange={(e) => setProductsForQuote(e.target.value)}
-                className="w-full bg-gray-50 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 text-gray-900 dark:text-white rounded-lg px-4 py-2.5 outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all min-h-[80px]"
-                placeholder="Liste os produtos necessários, se houver"
-              />
-            </div>
+              <div className="space-y-3">
+                <label className="block text-sm font-bold uppercase tracking-widest text-white/40 ml-1">Tipo de Ordem</label>
+                <select 
+                  value={type}
+                  onChange={(e) => setType(e.target.value as TicketType)}
+                  className="w-full bg-white/5 border border-white/10 focus:border-white/30 rounded-2xl px-6 py-5 outline-none transition-all text-white text-xl appearance-none cursor-pointer"
+                >
+                  <option value="CORRETIVA" className="bg-[#004a7c]">Manutenção Corretiva</option>
+                  <option value="PREVENTIVA" className="bg-[#004a7c]">Manutenção Preventiva</option>
+                </select>
+              </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Relato da Ordem de Serviço</label>
-              <textarea 
-                value={serviceReport}
-                onChange={(e) => setServiceReport(e.target.value)}
-                className="w-full bg-gray-50 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 text-gray-900 dark:text-white rounded-lg px-4 py-2.5 outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all min-h-[80px]"
-              />
+              <div className="space-y-3">
+                <label className="block text-sm font-bold uppercase tracking-widest text-white/40 ml-1">Status</label>
+                <select 
+                  value={status}
+                  onChange={(e) => setStatus(e.target.value as TicketStatus)}
+                  className="w-full bg-white/5 border border-white/10 focus:border-white/30 rounded-2xl px-6 py-5 outline-none transition-all text-white text-xl appearance-none cursor-pointer"
+                >
+                  <option value="APROVADO" className="bg-[#004a7c]">Aprovado</option>
+                  <option value="AGUARDANDO_MATERIAL" className="bg-[#004a7c]">Aguardando Material</option>
+                  <option value="REALIZANDO" className="bg-[#004a7c]">Realizando</option>
+                  <option value="CONCLUIDO" className="bg-[#004a7c]">Concluído</option>
+                </select>
+              </div>
+              
+              <div className="space-y-3">
+                <label className="block text-sm font-bold uppercase tracking-widest text-white/40 ml-1">Cliente / Condomínio</label>
+                <select 
+                  value={clientId}
+                  onChange={(e) => setClientId(e.target.value)}
+                  className="w-full bg-white/5 border border-white/10 focus:border-white/30 rounded-2xl px-6 py-5 outline-none transition-all text-white text-xl appearance-none cursor-pointer"
+                  required
+                >
+                  <option value="" className="bg-[#004a7c]">Selecione um cliente...</option>
+                  {clients.map(client => (
+                    <option key={client.id} value={client.id} className="bg-[#004a7c]">{client.name}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="space-y-3">
+                <label className="block text-sm font-bold uppercase tracking-widest text-white/40 ml-1">Data</label>
+                <input 
+                  type="date"
+                  value={date}
+                  onChange={(e) => setDate(e.target.value)}
+                  className="w-full bg-white/5 border border-white/10 focus:border-white/30 rounded-2xl px-6 py-5 outline-none transition-all text-white text-xl"
+                />
+              </div>
+
+              <div className="md:col-span-2 space-y-3">
+                <label className="block text-sm font-bold uppercase tracking-widest text-white/40 ml-1">Técnico Responsável</label>
+                <input 
+                  type="text"
+                  value={technician}
+                  onChange={(e) => setTechnician(e.target.value)}
+                  className="w-full bg-white/5 border border-white/10 focus:border-white/30 rounded-2xl px-6 py-5 outline-none transition-all text-white text-xl placeholder:text-white/10"
+                  placeholder="Nome do técnico"
+                />
+              </div>
             </div>
-          </div>
-        ) : (
-          <div className="space-y-6">
-            <h2 className="text-lg font-bold text-gray-900 dark:text-white border-b border-gray-100 dark:border-zinc-800 pb-2">Checklist do Prédio</h2>
-            
-            {categories.map(category => (
-              <div key={category} className="space-y-3">
-                <h3 className="font-semibold text-gray-800 dark:text-gray-200 bg-gray-50 dark:bg-zinc-800/50 p-2 rounded">{category}</h3>
-                <div className="space-y-3 pl-2">
-                  {filteredChecklistItems.filter(item => item.category === category).map(item => (
-                    <div key={item.id} className="flex flex-col md:flex-row md:items-center gap-4 p-3 border border-gray-100 dark:border-zinc-800 rounded-lg hover:bg-gray-50 dark:hover:bg-zinc-800/50 transition-colors">
-                      <div className="flex-1 font-medium text-sm text-gray-700 dark:text-gray-300">{item.task}</div>
-                      <div className="flex items-center gap-2">
-                        <select 
-                          value={checklistResults[item.id]?.status || 'OK'}
-                          onChange={(e) => setChecklistResults(prev => ({
-                            ...prev,
-                            [item.id]: { ...prev[item.id], status: e.target.value as any }
-                          }))}
-                          className={`border rounded-md px-2 py-1.5 text-sm font-medium outline-none transition-colors ${
-                            checklistResults[item.id]?.status === 'OK' ? 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800/50' :
-                            checklistResults[item.id]?.status === 'NOK' ? 'bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 border-red-200 dark:border-red-800/50' :
-                            'bg-gray-50 dark:bg-zinc-800 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-zinc-700'
-                          }`}
-                        >
-                          <option value="OK">OK</option>
-                          <option value="NOK">Não OK</option>
-                          <option value="NA">N/A</option>
-                        </select>
-                        <input 
-                          type="text"
-                          placeholder="Observações..."
-                          value={checklistResults[item.id]?.notes || ''}
-                          onChange={(e) => setChecklistResults(prev => ({
-                            ...prev,
-                            [item.id]: { ...prev[item.id], notes: e.target.value }
-                          }))}
-                          className="bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-700 text-gray-900 dark:text-white rounded-md px-3 py-1.5 text-sm outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all w-full md:w-48"
-                        />
+          </motion.div>
+
+          {/* Campos Específicos */}
+          <AnimatePresence mode="wait">
+            {type === 'CORRETIVA' ? (
+              <motion.div 
+                key="corretiva"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 20 }}
+                className="bg-white/5 backdrop-blur-md rounded-[2.5rem] border border-white/10 p-10 shadow-2xl space-y-10"
+              >
+                <h2 className="text-2xl font-bold mb-10 flex items-center gap-3">
+                  <Wrench className="w-6 h-6 text-red-400" />
+                  Detalhes da Corretiva
+                </h2>
+                
+                <div className="space-y-8">
+                  <div className="space-y-3">
+                    <label className="block text-sm font-bold uppercase tracking-widest text-white/40 ml-1">Problema Relatado</label>
+                    <textarea 
+                      value={reportedProblem}
+                      onChange={(e) => setReportedProblem(e.target.value)}
+                      className="w-full bg-white/5 border border-white/10 focus:border-white/30 rounded-2xl px-6 py-5 outline-none transition-all text-white text-lg min-h-[120px] resize-none"
+                      placeholder="Descreva o problema relatado pelo cliente..."
+                    />
+                  </div>
+
+                  <div className="space-y-3">
+                    <label className="block text-sm font-bold uppercase tracking-widest text-white/40 ml-1">Produtos para Orçamento</label>
+                    <textarea 
+                      value={productsForQuote}
+                      onChange={(e) => setProductsForQuote(e.target.value)}
+                      className="w-full bg-white/5 border border-white/10 focus:border-white/30 rounded-2xl px-6 py-5 outline-none transition-all text-white text-lg min-h-[120px] resize-none"
+                      placeholder="Liste os produtos necessários, se houver..."
+                    />
+                  </div>
+
+                  <div className="space-y-3">
+                    <label className="block text-sm font-bold uppercase tracking-widest text-white/40 ml-1">Relato da Ordem de Serviço</label>
+                    <textarea 
+                      value={serviceReport}
+                      onChange={(e) => setServiceReport(e.target.value)}
+                      className="w-full bg-white/5 border border-white/10 focus:border-white/30 rounded-2xl px-6 py-5 outline-none transition-all text-white text-lg min-h-[120px] resize-none"
+                      placeholder="Descreva o serviço realizado..."
+                    />
+                  </div>
+                </div>
+              </motion.div>
+            ) : (
+              <motion.div 
+                key="preventiva"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                className="bg-white/5 backdrop-blur-md rounded-[2.5rem] border border-white/10 p-10 shadow-2xl space-y-10"
+              >
+                <h2 className="text-2xl font-bold mb-10 flex items-center gap-3">
+                  <ClipboardList className="w-6 h-6 text-emerald-400" />
+                  Checklist do Prédio
+                </h2>
+                
+                <div className="space-y-12">
+                  {categories.map(category => (
+                    <div key={category} className="space-y-6">
+                      <h3 className="text-sm font-black uppercase tracking-[0.3em] text-white/20 border-b border-white/5 pb-4">{category}</h3>
+                      <div className="space-y-4">
+                        {filteredChecklistItems.filter(item => item.category === category).map(item => (
+                          <div key={item.id} className="flex flex-col lg:flex-row lg:items-center gap-6 p-6 bg-white/5 rounded-3xl border border-white/5 hover:bg-white/10 transition-all group">
+                            <div className="flex-1 font-bold text-lg text-white/80 group-hover:text-white transition-colors">{item.task}</div>
+                            <div className="flex flex-col sm:flex-row items-center gap-4">
+                              <select 
+                                value={checklistResults[item.id]?.status || 'OK'}
+                                onChange={(e) => setChecklistResults(prev => ({
+                                  ...prev,
+                                  [item.id]: { ...prev[item.id], status: e.target.value as any }
+                                }))}
+                                className={`w-full sm:w-32 border rounded-xl px-4 py-3 text-sm font-black uppercase tracking-widest outline-none transition-all appearance-none text-center cursor-pointer ${
+                                  checklistResults[item.id]?.status === 'OK' ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30' :
+                                  checklistResults[item.id]?.status === 'NOK' ? 'bg-red-500/20 text-red-400 border-red-500/30' :
+                                  'bg-white/5 text-white/40 border-white/10'
+                                }`}
+                              >
+                                <option value="OK" className="bg-[#004a7c]">OK</option>
+                                <option value="NOK" className="bg-[#004a7c]">Não OK</option>
+                                <option value="NA" className="bg-[#004a7c]">N/A</option>
+                              </select>
+                              <div className="relative w-full sm:w-64">
+                                <input 
+                                  type="text"
+                                  placeholder="Observações..."
+                                  value={checklistResults[item.id]?.notes || ''}
+                                  onChange={(e) => setChecklistResults(prev => ({
+                                    ...prev,
+                                    [item.id]: { ...prev[item.id], notes: e.target.value }
+                                  }))}
+                                  className="w-full bg-white/5 border border-white/10 focus:border-white/30 rounded-xl px-4 py-3 text-sm outline-none transition-all text-white placeholder:text-white/10"
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        ))}
                       </div>
                     </div>
                   ))}
                 </div>
-              </div>
-            ))}
-          </div>
-        )}
+              </motion.div>
+            )}
+          </AnimatePresence>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Observações Gerais</label>
-          <textarea 
-            value={observations}
-            onChange={(e) => setObservations(e.target.value)}
-            className="w-full bg-gray-50 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 text-gray-900 dark:text-white rounded-lg px-4 py-2.5 outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all min-h-[80px]"
-          />
-        </div>
+          <motion.div variants={itemVariants} className="bg-white/5 backdrop-blur-md rounded-[2.5rem] border border-white/10 p-10 shadow-2xl">
+            <label className="block text-sm font-bold uppercase tracking-widest text-white/40 ml-1 mb-4">Observações Gerais</label>
+            <textarea 
+              value={observations}
+              onChange={(e) => setObservations(e.target.value)}
+              className="w-full bg-white/5 border border-white/10 focus:border-white/30 rounded-2xl px-6 py-5 outline-none transition-all text-white text-lg min-h-[120px] resize-none"
+              placeholder="Alguma observação adicional importante?"
+            />
+          </motion.div>
 
-        <div className="pt-6 border-t border-gray-100 dark:border-zinc-800 flex justify-end gap-3">
-          <button 
-            type="button"
-            onClick={() => navigate(-1)}
-            className="px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-zinc-800 rounded-lg font-medium transition-colors"
-          >
-            Cancelar
-          </button>
-          <button 
-            type="submit"
-            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors"
-          >
-            Salvar Ordem de Serviço
-          </button>
-        </div>
-      </form>
+          <motion.div variants={itemVariants} className="flex flex-col sm:flex-row justify-end gap-6 pt-6">
+            <button 
+              type="button"
+              onClick={() => navigate(-1)}
+              className="px-10 py-5 text-white/40 hover:text-white font-black tracking-widest transition-all uppercase text-sm"
+            >
+              CANCELAR
+            </button>
+            <button 
+              type="submit"
+              className="bg-white/10 hover:bg-white/20 text-white px-12 py-5 rounded-2xl font-black tracking-widest border border-white/30 backdrop-blur-md transition-all active:scale-95 shadow-2xl flex items-center justify-center gap-3"
+            >
+              <Save className="w-6 h-6" /> SALVAR ORDEM DE SERVIÇO
+            </button>
+          </motion.div>
+        </form>
+      </motion.div>
     </div>
   );
 }
