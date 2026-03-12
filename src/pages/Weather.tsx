@@ -1,28 +1,104 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { CloudSun, Sun, Droplets, Wind, MapPin, ArrowLeft, Settings, Thermometer, TrendingUp, ArrowRight } from 'lucide-react';
+import { CloudSun, Sun, Droplets, Wind, MapPin, ArrowLeft, Settings, Thermometer, TrendingUp, ArrowRight, CloudRain, CloudLightning, CloudFog, Cloud } from 'lucide-react';
 import { motion } from 'motion/react';
+
+interface WeatherData {
+  temp: number;
+  condition: string;
+  humidity: number;
+  wind: number;
+  feelsLike: number;
+  high: number;
+  low: number;
+  forecast: { day: string; temp: number; icon: React.ReactNode }[];
+}
 
 export default function Weather() {
   const navigate = useNavigate();
-  const [location, setLocation] = useState('Rio de Janeiro, RJ');
-  
-  // Mock data for Rio de Janeiro
-  const weatherData = {
-    temp: 31,
-    condition: 'Ensolarado',
-    humidity: 65,
-    wind: 12,
-    feelsLike: 34,
-    high: 33,
-    low: 24,
-    forecast: [
-      { day: 'Sex', temp: 32, icon: <Sun className="w-6 h-6 text-yellow-400" /> },
-      { day: 'Sáb', temp: 30, icon: <CloudSun className="w-6 h-6 text-blue-200" /> },
-      { day: 'Dom', temp: 29, icon: <CloudSun className="w-6 h-6 text-blue-200" /> },
-      { day: 'Seg', temp: 31, icon: <Sun className="w-6 h-6 text-yellow-400" /> },
-      { day: 'Ter', temp: 33, icon: <Sun className="w-6 h-6 text-yellow-400" /> },
-    ]
+  const [location, setLocation] = useState('Rio de Janeiro');
+  const [loading, setLoading] = useState(true);
+  const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  const getWeatherIcon = (code: number, size: string = "w-6 h-6") => {
+    if (code === 0) return <Sun className={`${size} text-yellow-400`} />;
+    if (code >= 1 && code <= 3) return <CloudSun className={`${size} text-blue-200`} />;
+    if (code >= 45 && code <= 48) return <CloudFog className={`${size} text-gray-300`} />;
+    if (code >= 51 && code <= 67 || code >= 80 && code <= 82) return <CloudRain className={`${size} text-blue-400`} />;
+    if (code >= 71 && code <= 77 || code >= 85 && code <= 86) return <Cloud className={`${size} text-white`} />;
+    if (code >= 95) return <CloudLightning className={`${size} text-purple-400`} />;
+    return <CloudSun className={`${size} text-blue-200`} />;
+  };
+
+  const getWeatherCondition = (code: number) => {
+    if (code === 0) return 'Céu Limpo';
+    if (code >= 1 && code <= 3) return 'Parcialmente Nublado';
+    if (code >= 45 && code <= 48) return 'Nevoeiro';
+    if (code >= 51 && code <= 55) return 'Chuvisco';
+    if (code >= 61 && code <= 65) return 'Chuva';
+    if (code >= 80 && code <= 82) return 'Pancadas de Chuva';
+    if (code >= 95) return 'Tempestade';
+    return 'Nublado';
+  };
+
+  const fetchWeather = useCallback(async (cityName: string) => {
+    setLoading(true);
+    setError(null);
+    try {
+      // 1. Geocoding
+      const geoRes = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(cityName)}&count=1&language=pt&format=json`);
+      const geoData = await geoRes.json();
+      
+      if (!geoData.results || geoData.results.length === 0) {
+        throw new Error('Cidade não encontrada');
+      }
+
+      const { latitude, longitude, name, admin1 } = geoData.results[0];
+      const displayName = `${name}, ${admin1 || ''}`;
+
+      // 2. Weather
+      const weatherRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=auto`);
+      const data = await weatherRes.json();
+
+      const current = data.current;
+      const daily = data.daily;
+      
+      const days = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+      const forecast = daily.time.slice(1, 6).map((time: string, i: number) => {
+        const date = new Date(time + 'T00:00:00');
+        return {
+          day: days[date.getDay()],
+          temp: Math.round(daily.temperature_2m_max[i + 1]),
+          icon: getWeatherIcon(daily.weather_code[i + 1])
+        };
+      });
+
+      setWeatherData({
+        temp: Math.round(current.temperature_2m),
+        condition: getWeatherCondition(current.weather_code),
+        humidity: current.relative_humidity_2m,
+        wind: Math.round(current.wind_speed_10m),
+        feelsLike: Math.round(current.apparent_temperature),
+        high: Math.round(daily.temperature_2m_max[0]),
+        low: Math.round(daily.temperature_2m_min[0]),
+        forecast
+      });
+      setLocation(displayName);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Erro ao carregar clima');
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchWeather('Rio de Janeiro');
+  }, [fetchWeather]);
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    fetchWeather(location);
   };
 
   return (
@@ -50,74 +126,89 @@ export default function Weather() {
               <MapPin className="w-5 h-5" />
               {location}
             </p>
-            <p className="text-sm opacity-60">Atualizado agora</p>
+            <p className="text-sm opacity-60">{loading ? 'Atualizando...' : 'Atualizado agora'}</p>
           </div>
         </div>
       </header>
+
+      {error && (
+        <div className="bg-red-500/20 border border-red-500/50 p-4 rounded-xl mb-8 relative z-10">
+          {error}
+        </div>
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 relative z-10">
         {/* Main Weather Card */}
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="lg:col-span-2 bg-white/10 backdrop-blur-md border border-white/20 p-8 rounded-3xl shadow-2xl"
+          className="lg:col-span-2 bg-white/10 backdrop-blur-md border border-white/20 p-8 rounded-3xl shadow-2xl min-h-[400px] flex flex-col justify-center"
         >
-          <div className="flex flex-col md:flex-row items-center justify-between gap-8">
-            <div className="flex items-center gap-8">
-              <div className="relative">
-                <Sun className="w-32 h-32 text-yellow-300 drop-shadow-[0_0_20px_rgba(253,224,71,0.6)] animate-pulse" />
-                <CloudSun className="w-16 h-16 text-white absolute -bottom-2 -right-2 drop-shadow-lg" />
-              </div>
-              <div>
-                <span className="text-9xl font-thin leading-none">{weatherData.temp}°</span>
-                <p className="text-2xl mt-2 opacity-80">{weatherData.condition}</p>
-              </div>
+          {loading && !weatherData ? (
+            <div className="flex flex-col items-center justify-center gap-4">
+              <div className="w-12 h-12 border-4 border-white/20 border-t-white rounded-full animate-spin" />
+              <p className="text-xl opacity-60">Carregando informações ao vivo...</p>
             </div>
-            
-            <div className="grid grid-cols-2 gap-6 w-full md:w-auto">
-              <div className="flex items-center gap-3 bg-white/5 p-4 rounded-2xl">
-                <Droplets className="w-6 h-6 text-blue-300" />
-                <div>
-                  <p className="text-xs opacity-60 uppercase font-bold">Umidade</p>
-                  <p className="text-xl font-medium">{weatherData.humidity}%</p>
+          ) : weatherData ? (
+            <>
+              <div className="flex flex-col md:flex-row items-center justify-between gap-8">
+                <div className="flex items-center gap-8">
+                  <div className="relative">
+                    {getWeatherIcon(0, "w-32 h-32 text-yellow-300 drop-shadow-[0_0_20px_rgba(253,224,71,0.6)] animate-pulse")}
+                    <CloudSun className="w-16 h-16 text-white absolute -bottom-2 -right-2 drop-shadow-lg" />
+                  </div>
+                  <div>
+                    <span className="text-9xl font-thin leading-none">{weatherData.temp}°</span>
+                    <p className="text-2xl mt-2 opacity-80">{weatherData.condition}</p>
+                  </div>
+                </div>
+                
+                <div className="grid grid-cols-2 gap-6 w-full md:w-auto">
+                  <div className="flex items-center gap-3 bg-white/5 p-4 rounded-2xl">
+                    <Droplets className="w-6 h-6 text-blue-300" />
+                    <div>
+                      <p className="text-xs opacity-60 uppercase font-bold">Umidade</p>
+                      <p className="text-xl font-medium">{weatherData.humidity}%</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3 bg-white/5 p-4 rounded-2xl">
+                    <Wind className="w-6 h-6 text-emerald-300" />
+                    <div>
+                      <p className="text-xs opacity-60 uppercase font-bold">Vento</p>
+                      <p className="text-xl font-medium">{weatherData.wind} km/h</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3 bg-white/5 p-4 rounded-2xl">
+                    <Thermometer className="w-6 h-6 text-orange-300" />
+                    <div>
+                      <p className="text-xs opacity-60 uppercase font-bold">Sensação</p>
+                      <p className="text-xl font-medium">{weatherData.feelsLike}°</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3 bg-white/5 p-4 rounded-2xl">
+                    <TrendingUp className="w-6 h-6 text-red-300" />
+                    <div>
+                      <p className="text-xs opacity-60 uppercase font-bold">Máx / Mín</p>
+                      <p className="text-xl font-medium">{weatherData.high}° / {weatherData.low}°</p>
+                    </div>
+                  </div>
                 </div>
               </div>
-              <div className="flex items-center gap-3 bg-white/5 p-4 rounded-2xl">
-                <Wind className="w-6 h-6 text-emerald-300" />
-                <div>
-                  <p className="text-xs opacity-60 uppercase font-bold">Vento</p>
-                  <p className="text-xl font-medium">{weatherData.wind} km/h</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-3 bg-white/5 p-4 rounded-2xl">
-                <Thermometer className="w-6 h-6 text-orange-300" />
-                <div>
-                  <p className="text-xs opacity-60 uppercase font-bold">Sensação</p>
-                  <p className="text-xl font-medium">{weatherData.feelsLike}°</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-3 bg-white/5 p-4 rounded-2xl">
-                <TrendingUp className="w-6 h-6 text-red-300" />
-                <div>
-                  <p className="text-xs opacity-60 uppercase font-bold">Máx / Mín</p>
-                  <p className="text-xl font-medium">{weatherData.high}° / {weatherData.low}°</p>
-                </div>
-              </div>
-            </div>
-          </div>
 
-          <div className="mt-12 pt-8 border-t border-white/10">
-            <h3 className="text-lg font-bold uppercase tracking-widest mb-6 opacity-60">Previsão para os próximos dias</h3>
-            <div className="flex justify-between items-center overflow-x-auto pb-4 gap-4">
-              {weatherData.forecast.map((item, idx) => (
-                <div key={idx} className="flex flex-col items-center gap-3 min-w-[80px] bg-white/5 p-4 rounded-2xl hover:bg-white/10 transition-colors">
-                  <span className="font-bold">{item.day}</span>
-                  {item.icon}
-                  <span className="text-xl">{item.temp}°</span>
+              <div className="mt-12 pt-8 border-t border-white/10">
+                <h3 className="text-lg font-bold uppercase tracking-widest mb-6 opacity-60">Previsão para os próximos dias</h3>
+                <div className="flex justify-between items-center overflow-x-auto pb-4 gap-4">
+                  {weatherData.forecast.map((item, idx) => (
+                    <div key={idx} className="flex flex-col items-center gap-3 min-w-[80px] bg-white/5 p-4 rounded-2xl hover:bg-white/10 transition-colors">
+                      <span className="font-bold">{item.day}</span>
+                      {item.icon}
+                      <span className="text-xl">{item.temp}°</span>
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
-          </div>
+              </div>
+            </>
+          ) : null}
         </motion.div>
 
         {/* Settings & Locations */}
@@ -132,30 +223,34 @@ export default function Weather() {
               <Settings className="w-5 h-5 opacity-60" />
               <h3 className="text-lg font-bold uppercase tracking-widest opacity-60">Configurações</h3>
             </div>
-            <div className="space-y-4">
+            <form onSubmit={handleSearch} className="space-y-4">
               <label className="block">
                 <span className="text-sm opacity-60 block mb-2">Localização Atual</span>
                 <input 
                   type="text" 
                   value={location}
                   onChange={(e) => setLocation(e.target.value)}
+                  placeholder="Ex: Rio de Janeiro"
                   className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 outline-none focus:border-white/50 transition-all"
                 />
               </label>
               <div className="flex gap-2">
-                <button className="flex-1 bg-white text-[#0078d7] font-bold py-3 rounded-xl hover:bg-white/90 transition-colors">Salvar</button>
-                <button className="px-4 bg-white/10 border border-white/20 rounded-xl hover:bg-white/20 transition-colors">
-                  <MapPin className="w-5 h-5" />
+                <button type="submit" disabled={loading} className="flex-1 bg-white text-[#0078d7] font-bold py-3 rounded-xl hover:bg-white/90 transition-colors disabled:opacity-50">
+                  {loading ? 'Buscando...' : 'Buscar'}
                 </button>
               </div>
-            </div>
+            </form>
           </div>
 
           <div className="flex-1">
             <h3 className="text-lg font-bold uppercase tracking-widest mb-6 opacity-60">Locais Salvos</h3>
             <div className="space-y-3">
               {['São Paulo, SP', 'Brasília, DF', 'Curitiba, PR'].map((city) => (
-                <button key={city} className="w-full flex items-center justify-between p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-all group">
+                <button 
+                  key={city} 
+                  onClick={() => fetchWeather(city)}
+                  className="w-full flex items-center justify-between p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-all group"
+                >
                   <span className="font-medium">{city}</span>
                   <ArrowRight className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-all" />
                 </button>

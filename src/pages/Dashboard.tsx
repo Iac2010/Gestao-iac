@@ -63,6 +63,62 @@ function SortableTile({ id, children, className }: { id: string, children: React
   );
 }
 
+function WeatherTile() {
+  const [data, setData] = useState<{ temp: number; city: string; condition: string; high: number; low: number } | null>(null);
+
+  useEffect(() => {
+    async function fetchLiveWeather() {
+      try {
+        const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=-22.9064&longitude=-43.1822&current=temperature_2m,weather_code&daily=temperature_2m_max,temperature_2m_min&timezone=auto');
+        const json = await res.json();
+        
+        const getWeatherCondition = (code: number) => {
+          if (code === 0) return 'Céu Limpo';
+          if (code >= 1 && code <= 3) return 'Parcialmente Nublado';
+          if (code >= 45 && code <= 48) return 'Nevoeiro';
+          if (code >= 51 && code <= 55) return 'Chuvisco';
+          if (code >= 61 && code <= 65) return 'Chuva';
+          if (code >= 80 && code <= 82) return 'Pancadas de Chuva';
+          if (code >= 95) return 'Tempestade';
+          return 'Nublado';
+        };
+
+        setData({
+          temp: Math.round(json.current.temperature_2m),
+          city: 'Rio de Janeiro',
+          condition: getWeatherCondition(json.current.weather_code),
+          high: Math.round(json.daily.temperature_2m_max[0]),
+          low: Math.round(json.daily.temperature_2m_min[0])
+        });
+      } catch (e) {
+        console.error('Weather fetch error', e);
+      }
+    }
+    fetchLiveWeather();
+  }, []);
+
+  return (
+    <Link to="/weather" className="w-full h-full bg-gradient-to-br from-[#0078d7] to-[#005a9e] hover:brightness-110 transition-all p-4 flex flex-col justify-between aspect-[2/1] group relative overflow-hidden border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.3)] active:scale-95">
+      <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-white/20 pointer-events-none" />
+      <div className="flex items-center gap-6 h-full relative z-10">
+        <div className="relative group-hover:scale-110 transition-transform duration-500">
+          <SunIcon className="w-16 h-16 text-yellow-300 drop-shadow-[0_0_15px_rgba(253,224,71,0.5)]" />
+          <CloudSun className="w-10 h-10 text-white absolute -bottom-1 -right-1 drop-shadow-lg" />
+        </div>
+        <div>
+          <span className="text-5xl font-light drop-shadow-lg">{data ? `${data.temp}°` : '--°'}</span>
+          <div className="mt-1">
+            <p className="text-sm font-bold uppercase tracking-wider drop-shadow-md">{data?.city || 'Carregando...'}</p>
+            <p className="text-xs opacity-80 drop-shadow-sm">{data?.condition || '...'}</p>
+            {data && <p className="text-[10px] opacity-60">{data.high}° / {data.low}°</p>}
+          </div>
+        </div>
+      </div>
+      <span className="text-[11px] font-bold uppercase tracking-wider relative z-10 drop-shadow-md">Clima</span>
+    </Link>
+  );
+}
+
 export default function Dashboard() {
   const { clients, tickets, products, receipts, costs, appointments, companyLogo, restoreData, theme, toggleTheme } = useStore();
   
@@ -191,26 +247,7 @@ export default function Dashboard() {
     {
       id: 'weather',
       type: 'wide',
-      component: (
-        <Link to="/weather" className="w-full h-full bg-gradient-to-br from-[#0078d7] to-[#005a9e] hover:brightness-110 transition-all p-4 flex flex-col justify-between aspect-[2/1] group relative overflow-hidden border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.3)] active:scale-95">
-          <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-white/20 pointer-events-none" />
-          <div className="flex items-center gap-6 h-full relative z-10">
-            <div className="relative group-hover:scale-110 transition-transform duration-500">
-              <SunIcon className="w-16 h-16 text-yellow-300 drop-shadow-[0_0_15px_rgba(253,224,71,0.5)]" />
-              <CloudSun className="w-10 h-10 text-white absolute -bottom-1 -right-1 drop-shadow-lg" />
-            </div>
-            <div>
-              <span className="text-5xl font-light drop-shadow-lg">31°</span>
-              <div className="mt-1">
-                <p className="text-sm font-bold uppercase tracking-wider drop-shadow-md">Rio de Janeiro</p>
-                <p className="text-xs opacity-80 drop-shadow-sm">Ensolarado (claro)</p>
-                <p className="text-[10px] opacity-60">33° / 24°</p>
-              </div>
-            </div>
-          </div>
-          <span className="text-[11px] font-bold uppercase tracking-wider relative z-10 drop-shadow-md">Clima</span>
-        </Link>
-      )
+      component: <WeatherTile />
     },
     {
       id: 'quick-actions',
