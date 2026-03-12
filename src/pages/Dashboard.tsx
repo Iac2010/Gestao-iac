@@ -4,7 +4,8 @@ import {
   Users, FileText, Plus, Hammer, 
   DollarSign, TrendingUp, Package, Database, 
   Calendar as CalendarIcon, CloudSun, Image as ImageIcon,
-  Settings, Moon, Sun, UserPlus, Sun as SunIcon
+  Settings, Moon, Sun, UserPlus, Sun as SunIcon,
+  Columns
 } from 'lucide-react';
 import { demoClients, demoProducts, demoChecklistItems, demoTickets, demoQuotes, demoReceipts, demoCosts, demoAppointments } from '../demoData';
 import { useState, useEffect } from 'react';
@@ -241,6 +242,22 @@ export default function Dashboard() {
             </div>
           </div>
           <span className="text-[11px] font-bold uppercase tracking-wider relative z-10 drop-shadow-md">Agenda</span>
+        </Link>
+      )
+    },
+    {
+      id: 'kanban',
+      type: 'square',
+      component: (
+        <Link to="/kanban" className="w-full h-full bg-gradient-to-br from-[#60a917] to-[#4d8712] hover:brightness-110 transition-all p-4 flex flex-col justify-between aspect-square group relative overflow-hidden border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.3)] active:scale-95">
+          <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-white/20 pointer-events-none" />
+          <div className="flex justify-center items-center h-full relative z-10">
+            <Columns className="w-12 h-12 text-white drop-shadow-lg group-hover:scale-110 transition-transform duration-500" />
+          </div>
+          <div className="flex justify-between items-end relative z-10">
+            <span className="text-[10px] font-bold uppercase tracking-wider drop-shadow-md">Kanban</span>
+            <span className="text-2xl font-light drop-shadow-lg">{tickets.length}</span>
+          </div>
         </Link>
       )
     },
