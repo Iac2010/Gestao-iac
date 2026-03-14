@@ -5,10 +5,10 @@ import {
   DollarSign, TrendingUp, Package, Database, 
   Calendar as CalendarIcon, CloudSun, Image as ImageIcon,
   Settings, Moon, Sun, UserPlus, Sun as SunIcon,
-  Columns
+  Columns, Clock
 } from 'lucide-react';
 import { demoClients, demoProducts, demoChecklistItems, demoTickets, demoQuotes, demoReceipts, demoCosts, demoAppointments } from '../demoData';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import {
   DndContext, 
   closestCenter,
@@ -127,7 +127,12 @@ export default function Dashboard() {
   const totalReceitas = receipts.reduce((acc, curr) => acc + curr.value, 0);
   const totalDespesas = costs.reduce((acc, curr) => acc + curr.value, 0);
   const saldo = totalReceitas - totalDespesas;
-  const nextAppointment = appointments.find(a => new Date(a.start) > new Date()) || appointments[0];
+  const nextAppointment = useMemo(() => {
+    const future = appointments
+      .filter(a => new Date(a.start) > new Date())
+      .sort((a, b) => new Date(a.start).getTime() - new Date(b.start).getTime());
+    return future[0] || appointments[0];
+  }, [appointments]);
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -145,14 +150,14 @@ export default function Dashboard() {
       id: 'tickets',
       type: 'wide',
       component: (
-        <Link to="/tickets" className="w-full h-full bg-gradient-to-br from-[#00aba9] to-[#008a88] hover:brightness-110 transition-all p-4 flex flex-col justify-between aspect-[2/1] group relative overflow-hidden border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.3)] active:scale-95">
-          <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-white/20 pointer-events-none" />
+        <Link to="/tickets" className="w-full h-full bg-zinc-900 hover:bg-black transition-all p-4 flex flex-col justify-between aspect-[2/1] group relative overflow-hidden border border-zinc-800 shadow-xl active:scale-95">
+          <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-white/10 pointer-events-none" />
           <div className="flex justify-center items-center h-full relative z-10">
             <Hammer className="w-16 h-16 text-white drop-shadow-lg group-hover:scale-110 transition-transform duration-500" />
           </div>
           <div className="flex justify-between items-end relative z-10">
-            <span className="text-[11px] font-bold uppercase tracking-wider drop-shadow-md">Ordens de Serviço</span>
-            <span className="text-5xl font-light drop-shadow-lg">{openTickets}</span>
+            <span className="text-[11px] font-bold uppercase tracking-wider drop-shadow-md text-white/70">Ordens de Serviço</span>
+            <span className="text-5xl font-light drop-shadow-lg text-white">{openTickets}</span>
           </div>
         </Link>
       )
@@ -225,23 +230,30 @@ export default function Dashboard() {
       id: 'calendar',
       type: 'wide',
       component: (
-        <Link to="/calendar" className="w-full h-full bg-gradient-to-br from-[#2d89ef] to-[#1e71cd] hover:brightness-110 transition-all p-4 flex flex-col justify-between aspect-[2/1] group relative overflow-hidden border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.3)] active:scale-95">
-          <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-white/20 pointer-events-none" />
+        <Link to="/calendar" className="w-full h-full bg-zinc-100 hover:bg-zinc-200 transition-all p-4 flex flex-col justify-between aspect-[2/1] group relative overflow-hidden border border-zinc-200 shadow-sm active:scale-95">
+          <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-black/5 to-black/10 pointer-events-none" />
           <div className="flex items-start gap-4 h-full relative z-10">
-            <CalendarIcon className="w-12 h-12 text-white shrink-0 drop-shadow-lg group-hover:rotate-3 transition-transform" />
-            <div className="overflow-hidden">
-              <p className="text-[10px] font-bold uppercase opacity-70 mb-1 tracking-widest drop-shadow-md">Próximo Compromisso</p>
+            <div className="p-3 bg-white rounded-2xl border border-zinc-200 shadow-sm group-hover:scale-110 transition-transform duration-500">
+              <CalendarIcon className="w-10 h-10 text-zinc-900" />
+            </div>
+            <div className="overflow-hidden flex-1">
+              <p className="text-[10px] font-black uppercase text-zinc-400 mb-1 tracking-[0.2em]">Próximo Compromisso</p>
               {nextAppointment ? (
-                <>
-                  <p className="font-bold text-lg truncate drop-shadow-md">{nextAppointment.title}</p>
-                  <p className="text-sm opacity-90 drop-shadow-sm">{new Date(nextAppointment.start).toLocaleDateString('pt-BR')}</p>
-                </>
+                <div className="space-y-1">
+                  <p className="font-black text-xl truncate text-zinc-900 leading-tight">{nextAppointment.title}</p>
+                  <div className="flex items-center gap-2 text-zinc-500">
+                    <Clock className="w-3 h-3" />
+                    <p className="text-sm font-medium">
+                      {new Date(nextAppointment.start).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' })} às {new Date(nextAppointment.start).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
+                    </p>
+                  </div>
+                </div>
               ) : (
-                <p className="text-sm italic opacity-60">Sem compromissos</p>
+                <p className="text-sm italic text-zinc-300 mt-2">Sem compromissos agendados</p>
               )}
             </div>
           </div>
-          <span className="text-[11px] font-bold uppercase tracking-wider relative z-10 drop-shadow-md">Agenda</span>
+          <span className="text-[11px] font-black uppercase tracking-[0.2em] relative z-10 text-zinc-400">Agenda</span>
         </Link>
       )
     },
@@ -356,31 +368,31 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen -m-6 md:-m-8 p-8 md:p-12 bg-[#004a7c] text-white overflow-x-hidden relative">
-      <div className="absolute inset-0 opacity-20 pointer-events-none overflow-hidden">
+    <div className="min-h-screen -m-6 md:-m-8 p-8 md:p-12 bg-white text-zinc-900 overflow-x-hidden relative">
+      <div className="absolute inset-0 opacity-10 pointer-events-none overflow-hidden">
         <svg className="w-full h-full" viewBox="0 0 1000 1000" xmlns="http://www.w3.org/2000/svg">
-          <path d="M0,1000 C300,800 400,900 1000,600 L1000,1000 L0,1000 Z" fill="white" fillOpacity="0.1" />
-          <path d="M0,800 C200,600 500,700 1000,400 L1000,800 L0,800 Z" fill="white" fillOpacity="0.05" />
+          <path d="M0,1000 C300,800 400,900 1000,600 L1000,1000 L0,1000 Z" fill="currentColor" className="text-zinc-200" fillOpacity="0.5" />
+          <path d="M0,800 C200,600 500,700 1000,400 L1000,800 L0,800 Z" fill="currentColor" className="text-zinc-100" fillOpacity="0.5" />
         </svg>
       </div>
 
       <header className="mb-12 flex justify-between items-start relative z-10">
-        <h1 className="text-6xl font-light tracking-tight">Iniciar</h1>
+        <h1 className="text-6xl font-light tracking-tight text-zinc-900">Iniciar</h1>
         <div className="flex items-center gap-6">
           <button 
             onClick={toggleTheme}
-            className="p-2 hover:bg-white/10 rounded-full transition-colors"
+            className="p-2 hover:bg-zinc-100 rounded-full transition-colors text-zinc-600"
           >
             {theme === 'dark' ? <SunIcon className="w-6 h-6" /> : <Moon className="w-6 h-6" />}
           </button>
           <div className="text-right">
-            <p className="text-xl font-medium">Administrador</p>
-            <p className="text-sm opacity-60">IA COMPANY TEC</p>
+            <p className="text-xl font-medium text-zinc-900">Administrador</p>
+            <p className="text-sm text-zinc-500 font-medium">IA COMPANY TEC</p>
           </div>
           {companyLogo ? (
-            <img src={companyLogo} alt="Logo" className="w-12 h-12 rounded-full object-cover border-2 border-white/20" />
+            <img src={companyLogo} alt="Logo" className="w-12 h-12 rounded-full object-cover border-2 border-zinc-200" />
           ) : (
-            <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
+            <div className="w-12 h-12 bg-zinc-100 rounded-full flex items-center justify-center text-zinc-400">
               <Users className="w-6 h-6" />
             </div>
           )}

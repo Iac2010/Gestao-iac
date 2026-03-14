@@ -1,9 +1,10 @@
 import React, { useState, useRef } from 'react';
 import { useStore, Product } from '../store';
-import { Plus, Trash2, Edit, FileSpreadsheet, Search, Package, Tag, Info } from 'lucide-react';
+import { Plus, Trash2, Edit, FileSpreadsheet, Search, Package, Tag, Info, ArrowLeft } from 'lucide-react';
 import Papa from 'papaparse';
 import { Modal } from '../components/Modal';
 import { motion } from 'motion/react';
+import { useNavigate } from 'react-router-dom';
 
 const VIBRANT_GRADIENTS = [
   'from-[#0078d7] to-[#005a9e]', // Blue
@@ -17,6 +18,7 @@ const VIBRANT_GRADIENTS = [
 ];
 
 export default function Products() {
+  const navigate = useNavigate();
   const { products, addProduct, updateProduct, deleteProduct, importProducts } = useStore();
   
   const [isAdding, setIsAdding] = useState(false);
@@ -115,9 +117,17 @@ export default function Products() {
       </div>
 
       <header className="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6 relative z-10">
-        <div>
-          <h1 className="text-6xl font-light tracking-tight">Produtos</h1>
-          <p className="text-xl opacity-60 mt-2 font-light">Gerencie seu catálogo de produtos e serviços</p>
+        <div className="flex items-center gap-6">
+          <button 
+            onClick={() => navigate(-1)}
+            className="p-4 bg-white/10 hover:bg-white/20 rounded-2xl transition-all text-white border border-white/10 backdrop-blur-md shadow-xl active:scale-95"
+          >
+            <ArrowLeft className="w-8 h-8" />
+          </button>
+          <div>
+            <h1 className="text-6xl font-light tracking-tight">Produtos</h1>
+            <p className="text-xl opacity-60 mt-2 font-light">Gerencie seu catálogo de produtos e serviços</p>
+          </div>
         </div>
         
         <div className="flex flex-wrap gap-3">

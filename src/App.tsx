@@ -43,11 +43,23 @@ function Layout({ children }: { children: React.ReactNode }) {
   }
 
   const isDashboard = location.pathname === '/';
+  const isImmersive = isDashboard || [
+    '/tickets', 
+    '/service-orders', 
+    '/tickets/new', 
+    '/calendar', 
+    '/kanban', 
+    '/products', 
+    '/financial', 
+    '/receipts', 
+    '/settings',
+    '/clients'
+  ].some(path => location.pathname.startsWith(path));
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-zinc-950 text-gray-900 dark:text-white transition-colors duration-200 font-sans flex flex-col">
       {/* Modern Top Bar */}
-      {!isDashboard && (
+      {!isImmersive && (
         <header className="bg-white dark:bg-zinc-900 border-b border-gray-200 dark:border-zinc-800 px-6 py-4 flex items-center justify-between z-20 relative">
           <div className="flex items-center gap-4">
             <button 

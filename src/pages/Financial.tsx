@@ -5,10 +5,11 @@ import { v4 as uuidv4 } from 'uuid';
 import { Modal } from '../components/Modal';
 import Papa from 'papaparse';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, LineChart, Line } from 'recharts';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'motion/react';
 
 export default function Financial() {
+  const navigate = useNavigate();
   const { receipts, costs, addCost, deleteCost, addReceipt, clients } = useStore();
   
   const [isAddingCost, setIsAddingCost] = useState(false);
@@ -193,23 +194,26 @@ export default function Financial() {
   }, [monthlyData, expensesByCategory]);
 
   return (
-    <div className="min-h-screen bg-[#004a7c] text-white -m-8 p-8 md:p-12 overflow-x-hidden relative">
+    <div className="min-h-screen bg-white text-zinc-900 -m-8 p-8 md:p-12 overflow-x-hidden relative">
       {/* Background Decorative Elements */}
-      <div className="absolute inset-0 opacity-20 pointer-events-none overflow-hidden">
+      <div className="absolute inset-0 opacity-10 pointer-events-none overflow-hidden">
         <svg className="w-full h-full" viewBox="0 0 1000 1000" xmlns="http://www.w3.org/2000/svg">
-          <path d="M0,1000 C300,800 400,900 1000,600 L1000,1000 L0,1000 Z" fill="white" fillOpacity="0.1" />
-          <path d="M0,800 C200,600 500,700 1000,400 L1000,800 L0,800 Z" fill="white" fillOpacity="0.05" />
+          <path d="M0,1000 C300,800 400,900 1000,600 L1000,1000 L0,1000 Z" fill="currentColor" className="text-zinc-200" fillOpacity="0.5" />
+          <path d="M0,800 C200,600 500,700 1000,400 L1000,800 L0,800 Z" fill="currentColor" className="text-zinc-100" fillOpacity="0.5" />
         </svg>
       </div>
 
       <header className="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6 relative z-10">
-        <div className="flex items-center gap-4">
-          <Link to="/" className="p-3 bg-white/10 hover:bg-white/20 rounded-xl transition-colors md:hidden text-white border border-white/10 backdrop-blur-md">
-            <ArrowLeft className="w-6 h-6" />
-          </Link>
+        <div className="flex items-center gap-6">
+          <button 
+            onClick={() => navigate(-1)}
+            className="p-4 bg-zinc-100 hover:bg-zinc-200 rounded-2xl transition-all text-zinc-600 border border-zinc-200 shadow-sm active:scale-95"
+          >
+            <ArrowLeft className="w-8 h-8" />
+          </button>
           <div>
-            <h1 className="text-6xl font-light tracking-tight">Financeiro</h1>
-            <p className="text-xl opacity-60 mt-2 font-light">Controle total do seu fluxo de caixa</p>
+            <h1 className="text-6xl font-light tracking-tight text-zinc-900">Financeiro</h1>
+            <p className="text-xl text-zinc-500 mt-2 font-light">Controle total do seu fluxo de caixa</p>
           </div>
         </div>
         
@@ -226,7 +230,7 @@ export default function Financial() {
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             htmlFor="csv-upload-financial"
-            className="bg-white/10 hover:bg-white/20 text-white px-6 py-4 flex items-center gap-3 border border-white/20 backdrop-blur-md transition-all cursor-pointer"
+            className="bg-zinc-100 hover:bg-zinc-200 text-zinc-600 px-6 py-4 flex items-center gap-3 border border-zinc-200 transition-all cursor-pointer rounded-xl"
           >
             <FileSpreadsheet className="w-5 h-5" /> 
             <span className="font-medium">Importar</span>
@@ -241,7 +245,7 @@ export default function Financial() {
               setClientId('');
               setIsAddingIncome(true);
             }}
-            className="bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-400 px-6 py-4 flex items-center gap-3 border border-emerald-500/30 backdrop-blur-md transition-all"
+            className="bg-emerald-50 hover:bg-emerald-100 text-emerald-600 px-6 py-4 flex items-center gap-3 border border-emerald-200 transition-all rounded-xl"
           >
             <Plus className="w-6 h-6" /> 
             <span className="text-lg font-medium">Receita</span>
@@ -255,7 +259,7 @@ export default function Financial() {
               setValue(0);
               setIsAddingCost(true);
             }}
-            className="bg-rose-500/20 hover:bg-rose-500/30 text-rose-400 px-6 py-4 flex items-center gap-3 border border-rose-500/30 backdrop-blur-md transition-all"
+            className="bg-rose-50 hover:bg-rose-100 text-rose-600 px-6 py-4 flex items-center gap-3 border border-rose-200 transition-all rounded-xl"
           >
             <Plus className="w-6 h-6" /> 
             <span className="text-lg font-medium">Custo</span>
@@ -268,15 +272,15 @@ export default function Financial() {
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-white/5 backdrop-blur-md rounded-3xl p-8 border border-white/10 shadow-2xl"
+          className="bg-zinc-50 rounded-3xl p-8 border border-zinc-200 shadow-xl"
         >
           <div className="flex items-center justify-between mb-6">
-            <h3 className="text-white/50 font-bold uppercase tracking-widest text-sm">Receitas</h3>
-            <div className="p-3 bg-emerald-500/20 text-emerald-400 rounded-2xl">
+            <h3 className="text-zinc-400 font-bold uppercase tracking-widest text-sm">Receitas</h3>
+            <div className="p-3 bg-emerald-50 text-emerald-600 rounded-2xl">
               <TrendingUp className="w-6 h-6" />
             </div>
           </div>
-          <p className="text-5xl font-black text-white tracking-tight">
+          <p className="text-5xl font-black text-zinc-900 tracking-tight">
             {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(totalIncome)}
           </p>
         </motion.div>
@@ -285,15 +289,15 @@ export default function Financial() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="bg-white/5 backdrop-blur-md rounded-3xl p-8 border border-white/10 shadow-2xl"
+          className="bg-zinc-50 rounded-3xl p-8 border border-zinc-200 shadow-xl"
         >
           <div className="flex items-center justify-between mb-6">
-            <h3 className="text-white/50 font-bold uppercase tracking-widest text-sm">Despesas</h3>
-            <div className="p-3 bg-rose-500/20 text-rose-400 rounded-2xl">
+            <h3 className="text-zinc-400 font-bold uppercase tracking-widest text-sm">Despesas</h3>
+            <div className="p-3 bg-rose-50 text-rose-600 rounded-2xl">
               <TrendingDown className="w-6 h-6" />
             </div>
           </div>
-          <p className="text-5xl font-black text-white tracking-tight">
+          <p className="text-5xl font-black text-zinc-900 tracking-tight">
             {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(totalCosts)}
           </p>
         </motion.div>
@@ -302,15 +306,15 @@ export default function Financial() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="bg-white/5 backdrop-blur-md rounded-3xl p-8 border border-white/10 shadow-2xl"
+          className="bg-zinc-50 rounded-3xl p-8 border border-zinc-200 shadow-xl"
         >
           <div className="flex items-center justify-between mb-6">
-            <h3 className="text-white/50 font-bold uppercase tracking-widest text-sm">Saldo</h3>
-            <div className={`p-3 rounded-2xl ${balance >= 0 ? 'bg-blue-500/20 text-blue-400' : 'bg-orange-500/20 text-orange-400'}`}>
+            <h3 className="text-zinc-400 font-bold uppercase tracking-widest text-sm">Saldo</h3>
+            <div className={`p-3 rounded-2xl ${balance >= 0 ? 'bg-blue-50 text-blue-600' : 'bg-orange-50 text-orange-600'}`}>
               <Wallet className="w-6 h-6" />
             </div>
           </div>
-          <p className={`text-5xl font-black tracking-tight ${balance >= 0 ? 'text-blue-400' : 'text-orange-400'}`}>
+          <p className={`text-5xl font-black tracking-tight ${balance >= 0 ? 'text-blue-600' : 'text-orange-600'}`}>
             {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(balance)}
           </p>
         </motion.div>
@@ -322,15 +326,15 @@ export default function Financial() {
           <motion.div 
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10 flex items-center gap-5"
+            className="bg-zinc-50 rounded-2xl p-6 border border-zinc-200 flex items-center gap-5 shadow-sm"
           >
-            <div className="p-4 bg-indigo-500/20 text-indigo-400 rounded-xl shrink-0">
+            <div className="p-4 bg-indigo-50 text-indigo-600 rounded-xl shrink-0">
               <Lightbulb className="w-7 h-7" />
             </div>
             <div>
-              <p className="text-xs text-white/40 font-bold uppercase tracking-wider mb-1">Melhor Mês</p>
-              <p className="text-lg font-bold text-white">{insights.bestMonth.name}</p>
-              <p className="text-lg font-black text-indigo-400">
+              <p className="text-xs text-zinc-400 font-bold uppercase tracking-wider mb-1">Melhor Mês</p>
+              <p className="text-lg font-bold text-zinc-900">{insights.bestMonth.name}</p>
+              <p className="text-lg font-black text-indigo-600">
                 {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(insights.bestMonth.saldo)}
               </p>
             </div>
@@ -340,15 +344,15 @@ export default function Financial() {
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.1 }}
-            className="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10 flex items-center gap-5"
+            className="bg-zinc-50 rounded-2xl p-6 border border-zinc-200 flex items-center gap-5 shadow-sm"
           >
-            <div className="p-4 bg-rose-500/20 text-rose-400 rounded-xl shrink-0">
+            <div className="p-4 bg-rose-50 text-rose-600 rounded-xl shrink-0">
               <TrendingDown className="w-7 h-7" />
             </div>
             <div>
-              <p className="text-xs text-white/40 font-bold uppercase tracking-wider mb-1">Pior Mês</p>
-              <p className="text-lg font-bold text-white">{insights.worstMonth.name}</p>
-              <p className="text-lg font-black text-rose-400">
+              <p className="text-xs text-zinc-400 font-bold uppercase tracking-wider mb-1">Pior Mês</p>
+              <p className="text-lg font-bold text-zinc-900">{insights.worstMonth.name}</p>
+              <p className="text-lg font-black text-rose-600">
                 {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(insights.worstMonth.despesas)}
               </p>
             </div>
@@ -358,15 +362,15 @@ export default function Financial() {
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.2 }}
-            className="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10 flex items-center gap-5"
+            className="bg-zinc-50 rounded-2xl p-6 border border-zinc-200 flex items-center gap-5 shadow-sm"
           >
-            <div className="p-4 bg-amber-500/20 text-amber-400 rounded-xl shrink-0">
+            <div className="p-4 bg-amber-50 text-amber-600 rounded-xl shrink-0">
               <BarChart3 className="w-7 h-7" />
             </div>
             <div>
-              <p className="text-xs text-white/40 font-bold uppercase tracking-wider mb-1">Maior Categoria</p>
-              <p className="text-lg font-bold text-white">{insights.topCategory?.name || 'N/A'}</p>
-              <p className="text-lg font-black text-amber-400">
+              <p className="text-xs text-zinc-400 font-bold uppercase tracking-wider mb-1">Maior Categoria</p>
+              <p className="text-lg font-bold text-zinc-900">{insights.topCategory?.name || 'N/A'}</p>
+              <p className="text-lg font-black text-amber-600">
                 {insights.topCategory ? new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(insights.topCategory.value) : '-'}
               </p>
             </div>
@@ -376,9 +380,9 @@ export default function Financial() {
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.3 }}
-            className="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10 flex items-center gap-5"
+            className="bg-zinc-50 rounded-2xl p-6 border border-zinc-200 flex items-center gap-5 shadow-sm"
           >
-            <div className="p-4 bg-teal-500/20 text-teal-400 rounded-xl shrink-0">
+            <div className="p-4 bg-teal-50 text-teal-600 rounded-xl shrink-0">
               {insights.growth > 0 ? (
                 <ArrowUpRight className="w-7 h-7" />
               ) : insights.growth < 0 ? (
@@ -386,11 +390,11 @@ export default function Financial() {
               ) : <TrendingUp className="w-7 h-7" />}
             </div>
             <div>
-              <p className="text-xs text-white/40 font-bold uppercase tracking-wider mb-1">Crescimento</p>
-              <p className="text-2xl font-black text-white">
+              <p className="text-xs text-zinc-400 font-bold uppercase tracking-wider mb-1">Crescimento</p>
+              <p className="text-2xl font-black text-zinc-900">
                 {Math.abs(insights.growth).toFixed(1)}%
               </p>
-              <p className="text-xs text-white/40">vs mês anterior</p>
+              <p className="text-xs text-zinc-400">vs mês anterior</p>
             </div>
           </motion.div>
         </div>
@@ -402,19 +406,19 @@ export default function Financial() {
           <motion.div 
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
-            className="bg-white/5 backdrop-blur-md rounded-3xl p-8 border border-white/10 shadow-2xl"
+            className="bg-zinc-50 rounded-3xl p-8 border border-zinc-200 shadow-xl"
           >
-            <h2 className="text-2xl font-bold text-white mb-8 tracking-tight">Evolução Mensal</h2>
+            <h2 className="text-2xl font-bold text-zinc-900 mb-8 tracking-tight">Evolução Mensal</h2>
             <div className="h-96">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={monthlyData} margin={{ top: 5, right: 5, left: 5, bottom: 5 }}>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.1)" />
-                  <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: 'rgba(255,255,255,0.5)', fontSize: 12 }} />
-                  <YAxis axisLine={false} tickLine={false} tick={{ fill: 'rgba(255,255,255,0.5)', fontSize: 12 }} tickFormatter={(value) => `R$ ${value}`} />
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(0,0,0,0.05)" />
+                  <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: 'rgba(0,0,0,0.4)', fontSize: 12 }} />
+                  <YAxis axisLine={false} tickLine={false} tick={{ fill: 'rgba(0,0,0,0.4)', fontSize: 12 }} tickFormatter={(value) => `R$ ${value}`} />
                   <Tooltip 
                     formatter={(value: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value)}
-                    contentStyle={{ backgroundColor: 'rgba(0, 74, 124, 0.9)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '1rem', color: '#fff' }}
-                    itemStyle={{ color: '#fff' }}
+                    contentStyle={{ backgroundColor: '#fff', border: '1px solid rgba(0,0,0,0.1)', borderRadius: '1rem', color: '#18181b' }}
+                    itemStyle={{ color: '#18181b' }}
                   />
                   <Legend />
                   <Bar dataKey="receitas" name="Receitas" fill="#10b981" radius={[6, 6, 0, 0]} />
@@ -427,19 +431,19 @@ export default function Financial() {
           <motion.div 
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
-            className="bg-white/5 backdrop-blur-md rounded-3xl p-8 border border-white/10 shadow-2xl"
+            className="bg-zinc-50 rounded-3xl p-8 border border-zinc-200 shadow-xl"
           >
-            <h2 className="text-2xl font-bold text-white mb-8 tracking-tight">Acompanhamento de Saldo</h2>
+            <h2 className="text-2xl font-bold text-zinc-900 mb-8 tracking-tight">Acompanhamento de Saldo</h2>
             <div className="h-96">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={monthlyData} margin={{ top: 5, right: 5, left: 5, bottom: 5 }}>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.1)" />
-                  <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: 'rgba(255,255,255,0.5)', fontSize: 12 }} />
-                  <YAxis axisLine={false} tickLine={false} tick={{ fill: 'rgba(255,255,255,0.5)', fontSize: 12 }} tickFormatter={(value) => `R$ ${value}`} />
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(0,0,0,0.05)" />
+                  <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: 'rgba(0,0,0,0.4)', fontSize: 12 }} />
+                  <YAxis axisLine={false} tickLine={false} tick={{ fill: 'rgba(0,0,0,0.4)', fontSize: 12 }} tickFormatter={(value) => `R$ ${value}`} />
                   <Tooltip 
                     formatter={(value: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value)}
-                    contentStyle={{ backgroundColor: 'rgba(0, 74, 124, 0.9)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '1rem', color: '#fff' }}
-                    itemStyle={{ color: '#fff' }}
+                    contentStyle={{ backgroundColor: '#fff', border: '1px solid rgba(0,0,0,0.1)', borderRadius: '1rem', color: '#18181b' }}
+                    itemStyle={{ color: '#18181b' }}
                   />
                   <Legend />
                   <Line type="monotone" dataKey="saldo" name="Saldo Mensal" stroke="#3b82f6" strokeWidth={4} dot={{ r: 6, fill: '#3b82f6', strokeWidth: 2, stroke: '#fff' }} activeDot={{ r: 8 }} />
@@ -452,7 +456,7 @@ export default function Financial() {
 
       {/* Transactions List */}
       <div className="relative z-10">
-        <h2 className="text-3xl font-bold text-white mb-8 tracking-tight">Histórico de Transações</h2>
+        <h2 className="text-3xl font-bold text-zinc-900 mb-8 tracking-tight">Histórico de Transações</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {transactions.map((t, index) => (
             <motion.div 
@@ -460,16 +464,16 @@ export default function Financial() {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: index * 0.02 }}
-              className="bg-white/5 backdrop-blur-md rounded-3xl p-8 border border-white/10 flex flex-col relative group hover:bg-white/10 transition-all shadow-xl"
+              className="bg-zinc-50 rounded-3xl p-8 border border-zinc-200 flex flex-col relative group hover:bg-zinc-100 transition-all shadow-xl"
             >
               <div className="flex justify-between items-start mb-6">
-                <div className="bg-white/10 p-3 rounded-xl">
-                  {t.type === 'income' ? <ArrowUpRight className="w-6 h-6 text-emerald-400" /> : <ArrowDownRight className="w-6 h-6 text-rose-400" />}
+                <div className="bg-zinc-100 p-3 rounded-xl">
+                  {t.type === 'income' ? <ArrowUpRight className="w-6 h-6 text-emerald-600" /> : <ArrowDownRight className="w-6 h-6 text-rose-600" />}
                 </div>
                 {t.type === 'expense' && (
                   <button 
                     onClick={() => deleteCost(t.id)}
-                    className="p-3 text-white/20 hover:text-rose-400 hover:bg-rose-500/20 rounded-xl transition-all opacity-0 group-hover:opacity-100"
+                    className="p-3 text-zinc-300 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-all opacity-0 group-hover:opacity-100"
                     title="Excluir"
                   >
                     <Trash2 className="w-5 h-5" />
@@ -477,18 +481,18 @@ export default function Financial() {
                 )}
               </div>
               
-              <h3 className="text-xl font-bold text-white mb-2 line-clamp-2">{t.description}</h3>
+              <h3 className="text-xl font-bold text-zinc-900 mb-2 line-clamp-2">{t.description}</h3>
               
-              <p className={`text-3xl font-black mb-6 ${t.type === 'income' ? 'text-emerald-400' : 'text-rose-400'}`}>
+              <p className={`text-3xl font-black mb-6 ${t.type === 'income' ? 'text-emerald-600' : 'text-rose-600'}`}>
                 {t.type === 'income' ? '+' : '-'} {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(t.value)}
               </p>
               
               <div className="mt-auto flex justify-between items-center text-sm">
-                <div className="flex items-center gap-2 text-white/40">
+                <div className="flex items-center gap-2 text-zinc-400">
                   <Calendar className="w-4 h-4" />
                   <span>{new Date(t.date).toLocaleDateString('pt-BR')}</span>
                 </div>
-                <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${t.type === 'income' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-rose-500/20 text-rose-400'}`}>
+                <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${t.type === 'income' ? 'bg-emerald-50 text-emerald-600' : 'bg-rose-50 text-rose-600'}`}>
                   {t.type === 'income' ? 'Receita' : (t as Cost).category}
                 </span>
               </div>
@@ -496,12 +500,12 @@ export default function Financial() {
           ))}
           
           {transactions.length === 0 && (
-            <div className="col-span-full py-24 text-center bg-white/5 backdrop-blur-md rounded-3xl border border-dashed border-white/10">
-              <div className="inline-flex items-center justify-center w-20 h-20 bg-white/10 rounded-full mb-6">
-                <DollarSign className="w-10 h-10 text-white/20" />
+            <div className="col-span-full py-24 text-center bg-zinc-50 rounded-3xl border border-dashed border-zinc-200">
+              <div className="inline-flex items-center justify-center w-20 h-20 bg-zinc-100 rounded-full mb-6">
+                <DollarSign className="w-10 h-10 text-zinc-200" />
               </div>
-              <h3 className="text-2xl font-light text-white/40">Nenhuma transação registrada</h3>
-              <p className="text-white/20 mt-2">Comece adicionando uma receita ou custo.</p>
+              <h3 className="text-2xl font-light text-zinc-400">Nenhuma transação registrada</h3>
+              <p className="text-zinc-300 mt-2">Comece adicionando uma receita ou custo.</p>
             </div>
           )}
         </div>
@@ -513,30 +517,29 @@ export default function Financial() {
         onClose={() => setIsAddingCost(false)} 
         title="Adicionar Custo"
         maxWidth="sm"
-        glass
       >
         <form onSubmit={handleAddCost} className="space-y-6 p-2">
           <div>
-            <label className="block text-sm font-bold uppercase tracking-wider text-white/50 mb-2">Descrição *</label>
+            <label className="block text-sm font-bold uppercase tracking-wider text-zinc-400 mb-2">Descrição *</label>
             <input 
               type="text" 
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="w-full bg-white/5 border border-white/10 focus:border-white/30 rounded-xl px-4 py-3 outline-none transition-all text-white placeholder:text-white/30"
+              className="w-full bg-zinc-50 border border-zinc-200 focus:border-blue-500 rounded-xl px-4 py-3 outline-none transition-all text-zinc-900 placeholder:text-zinc-300"
               placeholder="Ex: Compra de materiais..."
               required
             />
           </div>
 
           <div>
-            <label className="block text-sm font-bold uppercase tracking-wider text-white/50 mb-2">Valor (R$) *</label>
+            <label className="block text-sm font-bold uppercase tracking-wider text-zinc-400 mb-2">Valor (R$) *</label>
             <div className="relative">
-              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-white/30 font-bold">R$</span>
+              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-300 font-bold">R$</span>
               <input 
                 type="number" 
                 value={value || ''}
                 onChange={(e) => setValue(parseFloat(e.target.value) || 0)}
-                className="w-full bg-white/5 border border-white/10 focus:border-white/30 rounded-xl pl-12 pr-4 py-3 outline-none transition-all text-white"
+                className="w-full bg-zinc-50 border border-zinc-200 focus:border-blue-500 rounded-xl pl-12 pr-4 py-3 outline-none transition-all text-zinc-900"
                 min="0.01"
                 step="0.01"
                 required
@@ -545,28 +548,28 @@ export default function Financial() {
           </div>
 
           <div>
-            <label className="block text-sm font-bold uppercase tracking-wider text-white/50 mb-2">Data *</label>
+            <label className="block text-sm font-bold uppercase tracking-wider text-zinc-400 mb-2">Data *</label>
             <input 
               type="date" 
               value={date}
               onChange={(e) => setDate(e.target.value)}
-              className="w-full bg-white/5 border border-white/10 focus:border-white/30 rounded-xl px-4 py-3 outline-none transition-all text-white"
+              className="w-full bg-zinc-50 border border-zinc-200 focus:border-blue-500 rounded-xl px-4 py-3 outline-none transition-all text-zinc-900"
               required
             />
           </div>
 
           <div>
-            <label className="block text-sm font-bold uppercase tracking-wider text-white/50 mb-2">Categoria</label>
+            <label className="block text-sm font-bold uppercase tracking-wider text-zinc-400 mb-2">Categoria</label>
             <select 
               value={category}
               onChange={(e) => setCategory(e.target.value)}
-              className="w-full bg-white/5 border border-white/10 focus:border-white/30 rounded-xl px-4 py-3 outline-none transition-all text-white appearance-none cursor-pointer"
+              className="w-full bg-zinc-50 border border-zinc-200 focus:border-blue-500 rounded-xl px-4 py-3 outline-none transition-all text-zinc-900 appearance-none cursor-pointer"
             >
-              <option value="Material" className="bg-[#004a7c]">Material</option>
-              <option value="Combustível" className="bg-[#004a7c]">Combustível</option>
-              <option value="Alimentação" className="bg-[#004a7c]">Alimentação</option>
-              <option value="Ferramentas" className="bg-[#004a7c]">Ferramentas</option>
-              <option value="Outros" className="bg-[#004a7c]">Outros</option>
+              <option value="Material">Material</option>
+              <option value="Combustível">Combustível</option>
+              <option value="Alimentação">Alimentação</option>
+              <option value="Ferramentas">Ferramentas</option>
+              <option value="Outros">Outros</option>
             </select>
           </div>
 
@@ -574,13 +577,13 @@ export default function Financial() {
             <button 
               type="button"
               onClick={() => setIsAddingCost(false)}
-              className="px-6 py-3 text-white/60 hover:text-white transition-colors font-medium"
+              className="px-6 py-3 text-zinc-400 hover:text-zinc-600 transition-colors font-medium"
             >
               Cancelar
             </button>
             <button 
               type="submit"
-              className="bg-rose-500/20 hover:bg-rose-500/30 text-rose-400 px-10 py-3 rounded-xl font-bold backdrop-blur-md border border-rose-500/30 transition-all active:scale-95"
+              className="bg-rose-600 hover:bg-rose-700 text-white px-10 py-3 rounded-xl font-bold border border-rose-700 transition-all active:scale-95 shadow-lg"
             >
               SALVAR CUSTO
             </button>
@@ -594,45 +597,44 @@ export default function Financial() {
         onClose={() => setIsAddingIncome(false)} 
         title="Adicionar Receita"
         maxWidth="sm"
-        glass
       >
         <form onSubmit={handleAddIncome} className="space-y-6 p-2">
           <div>
-            <label className="block text-sm font-bold uppercase tracking-wider text-white/50 mb-2">Cliente *</label>
+            <label className="block text-sm font-bold uppercase tracking-wider text-zinc-400 mb-2">Cliente *</label>
             <select 
               value={clientId}
               onChange={(e) => setClientId(e.target.value)}
-              className="w-full bg-white/5 border border-white/10 focus:border-white/30 rounded-xl px-4 py-3 outline-none transition-all text-white appearance-none cursor-pointer"
+              className="w-full bg-zinc-50 border border-zinc-200 focus:border-blue-500 rounded-xl px-4 py-3 outline-none transition-all text-zinc-900 appearance-none cursor-pointer"
               required
             >
-              <option value="" className="bg-[#004a7c]">Selecione um cliente...</option>
+              <option value="">Selecione um cliente...</option>
               {clients.map(c => (
-                <option key={c.id} value={c.id} className="bg-[#004a7c]">{c.name}</option>
+                <option key={c.id} value={c.id}>{c.name}</option>
               ))}
             </select>
           </div>
 
           <div>
-            <label className="block text-sm font-bold uppercase tracking-wider text-white/50 mb-2">Descrição *</label>
+            <label className="block text-sm font-bold uppercase tracking-wider text-zinc-400 mb-2">Descrição *</label>
             <input 
               type="text" 
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="w-full bg-white/5 border border-white/10 focus:border-white/30 rounded-xl px-4 py-3 outline-none transition-all text-white placeholder:text-white/30"
+              className="w-full bg-zinc-50 border border-zinc-200 focus:border-blue-500 rounded-xl px-4 py-3 outline-none transition-all text-zinc-900 placeholder:text-zinc-300"
               placeholder="Ex: Pagamento de serviço avulso..."
               required
             />
           </div>
 
           <div>
-            <label className="block text-sm font-bold uppercase tracking-wider text-white/50 mb-2">Valor (R$) *</label>
+            <label className="block text-sm font-bold uppercase tracking-wider text-zinc-400 mb-2">Valor (R$) *</label>
             <div className="relative">
-              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-white/30 font-bold">R$</span>
+              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-300 font-bold">R$</span>
               <input 
                 type="number" 
                 value={value || ''}
                 onChange={(e) => setValue(parseFloat(e.target.value) || 0)}
-                className="w-full bg-white/5 border border-white/10 focus:border-white/30 rounded-xl pl-12 pr-4 py-3 outline-none transition-all text-white"
+                className="w-full bg-zinc-50 border border-zinc-200 focus:border-blue-500 rounded-xl pl-12 pr-4 py-3 outline-none transition-all text-zinc-900"
                 min="0.01"
                 step="0.01"
                 required
@@ -641,12 +643,12 @@ export default function Financial() {
           </div>
 
           <div>
-            <label className="block text-sm font-bold uppercase tracking-wider text-white/50 mb-2">Data *</label>
+            <label className="block text-sm font-bold uppercase tracking-wider text-zinc-400 mb-2">Data *</label>
             <input 
               type="date" 
               value={date}
               onChange={(e) => setDate(e.target.value)}
-              className="w-full bg-white/5 border border-white/10 focus:border-white/30 rounded-xl px-4 py-3 outline-none transition-all text-white"
+              className="w-full bg-zinc-50 border border-zinc-200 focus:border-blue-500 rounded-xl px-4 py-3 outline-none transition-all text-zinc-900"
               required
             />
           </div>
@@ -655,13 +657,13 @@ export default function Financial() {
             <button 
               type="button"
               onClick={() => setIsAddingIncome(false)}
-              className="px-6 py-3 text-white/60 hover:text-white transition-colors font-medium"
+              className="px-6 py-3 text-zinc-400 hover:text-zinc-600 transition-colors font-medium"
             >
               Cancelar
             </button>
             <button 
               type="submit"
-              className="bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-400 px-10 py-3 rounded-xl font-bold backdrop-blur-md border border-emerald-500/30 transition-all active:scale-95"
+              className="bg-emerald-600 hover:bg-emerald-700 text-white px-10 py-3 rounded-xl font-bold border border-emerald-700 transition-all active:scale-95 shadow-lg"
             >
               SALVAR RECEITA
             </button>

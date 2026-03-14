@@ -89,6 +89,7 @@ export type Ticket = {
     status: 'OK' | 'NOK' | 'NA';
     notes: string;
   }[];
+  images?: string[];
 };
 
 export type CompanyData = {

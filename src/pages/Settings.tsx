@@ -2,9 +2,10 @@ import React, { useRef, useState, useEffect } from 'react';
 import { useStore, CompanyData } from '../store';
 import { Upload, Trash2, Image as ImageIcon, Save, Download, Database, FileUp, ChevronUp, ChevronDown, Layout as LayoutIcon, ArrowLeft, Settings as SettingsIcon } from 'lucide-react';
 import { motion } from 'motion/react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 export default function Settings() {
+  const navigate = useNavigate();
   const { 
     companyLogo, setCompanyLogo, 
     companySignature, setCompanySignature,
@@ -146,23 +147,26 @@ export default function Settings() {
   };
 
   return (
-    <div className="min-h-screen bg-[#004a7c] text-white -m-8 p-8 md:p-12 overflow-x-hidden relative flex flex-col">
+    <div className="min-h-screen bg-white text-zinc-900 -m-8 p-8 md:p-12 overflow-x-hidden relative flex flex-col">
       {/* Background Decorative Elements */}
-      <div className="absolute inset-0 opacity-20 pointer-events-none overflow-hidden">
+      <div className="absolute inset-0 opacity-10 pointer-events-none overflow-hidden">
         <svg className="w-full h-full" viewBox="0 0 1000 1000" xmlns="http://www.w3.org/2000/svg">
-          <path d="M0,1000 C300,800 400,900 1000,600 L1000,1000 L0,1000 Z" fill="white" fillOpacity="0.1" />
-          <path d="M0,800 C200,600 500,700 1000,400 L1000,800 L0,800 Z" fill="white" fillOpacity="0.05" />
+          <path d="M0,1000 C300,800 400,900 1000,600 L1000,1000 L0,1000 Z" fill="currentColor" className="text-zinc-200" fillOpacity="0.5" />
+          <path d="M0,800 C200,600 500,700 1000,400 L1000,800 L0,800 Z" fill="currentColor" className="text-zinc-100" fillOpacity="0.5" />
         </svg>
       </div>
 
       <header className="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6 relative z-10 shrink-0">
-        <div className="flex items-center gap-4">
-          <Link to="/" className="p-3 bg-white/10 hover:bg-white/20 rounded-xl transition-colors md:hidden text-white border border-white/10 backdrop-blur-md">
-            <ArrowLeft className="w-6 h-6" />
-          </Link>
+        <div className="flex items-center gap-6">
+          <button 
+            onClick={() => navigate(-1)}
+            className="p-4 bg-zinc-100 hover:bg-zinc-200 rounded-2xl transition-all text-zinc-600 border border-zinc-200 shadow-sm active:scale-95"
+          >
+            <ArrowLeft className="w-8 h-8" />
+          </button>
           <div>
-            <h1 className="text-6xl font-light tracking-tight">Ajustes</h1>
-            <p className="text-xl opacity-60 mt-2 font-light">Configurações do sistema e dados da empresa</p>
+            <h1 className="text-6xl font-light tracking-tight text-zinc-900">Ajustes</h1>
+            <p className="text-xl text-zinc-500 mt-2 font-light">Configurações do sistema e dados da empresa</p>
           </div>
         </div>
       </header>
@@ -174,13 +178,13 @@ export default function Settings() {
         className="max-w-5xl mx-auto w-full space-y-8 relative z-10 pb-20"
       >
         {/* Logo Section */}
-        <motion.div variants={itemVariants} className="bg-white/5 backdrop-blur-md rounded-3xl border border-white/10 p-8 shadow-2xl">
-          <h2 className="text-2xl font-bold mb-8 flex items-center gap-3">
-            <ImageIcon className="w-6 h-6 text-blue-400" />
+        <motion.div variants={itemVariants} className="bg-zinc-50 rounded-3xl border border-zinc-200 p-8 shadow-xl">
+          <h2 className="text-2xl font-bold mb-8 flex items-center gap-3 text-zinc-900">
+            <ImageIcon className="w-6 h-6 text-blue-600" />
             Logo da Empresa
           </h2>
           <div className="flex flex-col md:flex-row items-start gap-10">
-            <div className="w-56 h-56 bg-white/5 rounded-2xl border-2 border-dashed border-white/20 flex items-center justify-center overflow-hidden shrink-0 group relative">
+            <div className="w-56 h-56 bg-white rounded-2xl border-2 border-dashed border-zinc-200 flex items-center justify-center overflow-hidden shrink-0 group relative">
               {companyLogo ? (
                 <>
                   <img src={companyLogo} alt="Logo da Empresa" className="w-full h-full object-contain p-4" />
@@ -191,7 +195,7 @@ export default function Settings() {
                   </div>
                 </>
               ) : (
-                <div className="text-center text-white/20">
+                <div className="text-center text-zinc-200">
                   <ImageIcon className="w-16 h-16 mx-auto mb-3 opacity-20" />
                   <span className="text-sm font-bold uppercase tracking-widest">Sem logo</span>
                 </div>
@@ -199,11 +203,11 @@ export default function Settings() {
             </div>
             
             <div className="flex-1 space-y-6">
-              <p className="text-lg text-white/60 font-light leading-relaxed">
+              <p className="text-lg text-zinc-500 font-light leading-relaxed">
                 Adicione a logo da sua empresa para que ela apareça no menu lateral e nos relatórios em PDF gerados pelo sistema.
               </p>
-              <div className="p-4 bg-white/5 rounded-xl border border-white/10">
-                <p className="text-sm text-white/40 font-medium">
+              <div className="p-4 bg-zinc-100 rounded-xl border border-zinc-200">
+                <p className="text-sm text-zinc-400 font-medium">
                   Recomendamos uma imagem com fundo transparente (PNG) ou branco (JPG).
                 </p>
               </div>
@@ -218,7 +222,7 @@ export default function Settings() {
                 />
                 <button 
                   onClick={() => fileInputRef.current?.click()}
-                  className="bg-white/10 hover:bg-white/20 text-white px-8 py-4 rounded-xl font-bold border border-white/20 backdrop-blur-md transition-all flex items-center gap-3"
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-xl font-bold border border-blue-700 transition-all flex items-center gap-3 shadow-lg"
                 >
                   <Upload className="w-5 h-5" /> ESCOLHER IMAGEM
                 </button>
@@ -228,13 +232,13 @@ export default function Settings() {
         </motion.div>
 
         {/* Signature Section */}
-        <motion.div variants={itemVariants} className="bg-white/5 backdrop-blur-md rounded-3xl border border-white/10 p-8 shadow-2xl">
-          <h2 className="text-2xl font-bold mb-8 flex items-center gap-3">
-            <ImageIcon className="w-6 h-6 text-purple-400" />
+        <motion.div variants={itemVariants} className="bg-zinc-50 rounded-3xl border border-zinc-200 p-8 shadow-xl">
+          <h2 className="text-2xl font-bold mb-8 flex items-center gap-3 text-zinc-900">
+            <ImageIcon className="w-6 h-6 text-purple-600" />
             Assinatura da Empresa
           </h2>
           <div className="flex flex-col md:flex-row items-start gap-10">
-            <div className="w-72 h-40 bg-white/5 rounded-2xl border-2 border-dashed border-white/20 flex items-center justify-center overflow-hidden shrink-0 group relative">
+            <div className="w-72 h-40 bg-white rounded-2xl border-2 border-dashed border-zinc-200 flex items-center justify-center overflow-hidden shrink-0 group relative">
               {companySignature ? (
                 <>
                   <img src={companySignature} alt="Assinatura da Empresa" className="w-full h-full object-contain p-4" />
@@ -245,7 +249,7 @@ export default function Settings() {
                   </div>
                 </>
               ) : (
-                <div className="text-center text-white/20">
+                <div className="text-center text-zinc-200">
                   <ImageIcon className="w-12 h-12 mx-auto mb-2 opacity-20" />
                   <span className="text-xs font-bold uppercase tracking-widest">Sem assinatura</span>
                 </div>
@@ -253,11 +257,11 @@ export default function Settings() {
             </div>
             
             <div className="flex-1 space-y-6">
-              <p className="text-lg text-white/60 font-light leading-relaxed">
+              <p className="text-lg text-zinc-500 font-light leading-relaxed">
                 Adicione uma imagem da assinatura digitalizada ou carimbo da sua empresa. Ela será exibida no rodapé de Orçamentos, Ordens de Serviço e Recibos.
               </p>
-              <div className="p-4 bg-white/5 rounded-xl border border-white/10">
-                <p className="text-sm text-white/40 font-medium">
+              <div className="p-4 bg-zinc-100 rounded-xl border border-zinc-200">
+                <p className="text-sm text-zinc-400 font-medium">
                   Recomendamos uma imagem com fundo transparente (PNG) para melhor visualização nos documentos.
                 </p>
               </div>
@@ -272,7 +276,7 @@ export default function Settings() {
                 />
                 <button 
                   onClick={() => signatureInputRef.current?.click()}
-                  className="bg-white/10 hover:bg-white/20 text-white px-8 py-4 rounded-xl font-bold border border-white/20 backdrop-blur-md transition-all flex items-center gap-3"
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-xl font-bold border border-blue-700 transition-all flex items-center gap-3 shadow-lg"
                 >
                   <Upload className="w-5 h-5" /> ESCOLHER ASSINATURA
                 </button>
@@ -282,70 +286,70 @@ export default function Settings() {
         </motion.div>
 
         {/* Company Data Section */}
-        <motion.div variants={itemVariants} className="bg-white/5 backdrop-blur-md rounded-3xl border border-white/10 p-8 shadow-2xl">
-          <h2 className="text-2xl font-bold mb-8 flex items-center gap-3">
-            <SettingsIcon className="w-6 h-6 text-emerald-400" />
+        <motion.div variants={itemVariants} className="bg-zinc-50 rounded-3xl border border-zinc-200 p-8 shadow-xl">
+          <h2 className="text-2xl font-bold mb-8 flex items-center gap-3 text-zinc-900">
+            <SettingsIcon className="w-6 h-6 text-emerald-600" />
             Dados da Empresa
           </h2>
           <form onSubmit={handleSaveData} className="space-y-8">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div className="space-y-2">
-                <label className="block text-sm font-bold uppercase tracking-wider text-white/40 ml-1">Nome da Empresa / Razão Social *</label>
+                <label className="block text-sm font-bold uppercase tracking-wider text-zinc-400 ml-1">Nome da Empresa / Razão Social *</label>
                 <input 
                   type="text" 
                   value={formData.name}
                   onChange={(e) => setFormData({...formData, name: e.target.value})}
-                  className="w-full bg-white/5 border border-white/10 focus:border-white/30 rounded-2xl px-6 py-4 outline-none transition-all text-white text-lg"
+                  className="w-full bg-white border border-zinc-200 focus:border-blue-500 rounded-2xl px-6 py-4 outline-none transition-all text-zinc-900 text-lg placeholder:text-zinc-300"
                   required
                 />
               </div>
               <div className="space-y-2">
-                <label className="block text-sm font-bold uppercase tracking-wider text-white/40 ml-1">CNPJ / CPF *</label>
+                <label className="block text-sm font-bold uppercase tracking-wider text-zinc-400 ml-1">CNPJ / CPF *</label>
                 <input 
                   type="text" 
                   value={formData.document}
                   onChange={(e) => setFormData({...formData, document: e.target.value})}
-                  className="w-full bg-white/5 border border-white/10 focus:border-white/30 rounded-2xl px-6 py-4 outline-none transition-all text-white text-lg"
+                  className="w-full bg-white border border-zinc-200 focus:border-blue-500 rounded-2xl px-6 py-4 outline-none transition-all text-zinc-900 text-lg placeholder:text-zinc-300"
                   required
                 />
               </div>
               <div className="space-y-2">
-                <label className="block text-sm font-bold uppercase tracking-wider text-white/40 ml-1">Telefone / WhatsApp *</label>
+                <label className="block text-sm font-bold uppercase tracking-wider text-zinc-400 ml-1">Telefone / WhatsApp *</label>
                 <input 
                   type="text" 
                   value={formData.phone}
                   onChange={(e) => setFormData({...formData, phone: e.target.value})}
-                  className="w-full bg-white/5 border border-white/10 focus:border-white/30 rounded-2xl px-6 py-4 outline-none transition-all text-white text-lg"
+                  className="w-full bg-white border border-zinc-200 focus:border-blue-500 rounded-2xl px-6 py-4 outline-none transition-all text-zinc-900 text-lg placeholder:text-zinc-300"
                   required
                 />
               </div>
               <div className="space-y-2">
-                <label className="block text-sm font-bold uppercase tracking-wider text-white/40 ml-1">E-mail *</label>
+                <label className="block text-sm font-bold uppercase tracking-wider text-zinc-400 ml-1">E-mail *</label>
                 <input 
                   type="email" 
                   value={formData.email}
                   onChange={(e) => setFormData({...formData, email: e.target.value})}
-                  className="w-full bg-white/5 border border-white/10 focus:border-white/30 rounded-2xl px-6 py-4 outline-none transition-all text-white text-lg"
+                  className="w-full bg-white border border-zinc-200 focus:border-blue-500 rounded-2xl px-6 py-4 outline-none transition-all text-zinc-900 text-lg placeholder:text-zinc-300"
                   required
                 />
               </div>
               <div className="md:col-span-2 space-y-2">
-                <label className="block text-sm font-bold uppercase tracking-wider text-white/40 ml-1">Endereço Completo *</label>
+                <label className="block text-sm font-bold uppercase tracking-wider text-zinc-400 ml-1">Endereço Completo *</label>
                 <input 
                   type="text" 
                   value={formData.address}
                   onChange={(e) => setFormData({...formData, address: e.target.value})}
-                  className="w-full bg-white/5 border border-white/10 focus:border-white/30 rounded-2xl px-6 py-4 outline-none transition-all text-white text-lg"
+                  className="w-full bg-white border border-zinc-200 focus:border-blue-500 rounded-2xl px-6 py-4 outline-none transition-all text-zinc-900 text-lg placeholder:text-zinc-300"
                   required
                 />
               </div>
               <div className="md:col-span-2 space-y-2">
-                <label className="block text-sm font-bold uppercase tracking-wider text-white/40 ml-1">Site (Opcional)</label>
+                <label className="block text-sm font-bold uppercase tracking-wider text-zinc-400 ml-1">Site (Opcional)</label>
                 <input 
                   type="text" 
                   value={formData.website || ''}
                   onChange={(e) => setFormData({...formData, website: e.target.value})}
-                  className="w-full bg-white/5 border border-white/10 focus:border-white/30 rounded-2xl px-6 py-4 outline-none transition-all text-white text-lg"
+                  className="w-full bg-white border border-zinc-200 focus:border-blue-500 rounded-2xl px-6 py-4 outline-none transition-all text-zinc-900 text-lg placeholder:text-zinc-300"
                 />
               </div>
             </div>
@@ -353,7 +357,7 @@ export default function Settings() {
             <div className="flex justify-end pt-6">
               <button 
                 type="submit"
-                className="bg-white/10 hover:bg-white/20 text-white px-12 py-5 rounded-2xl font-black tracking-widest border border-white/30 backdrop-blur-md transition-all active:scale-95 flex items-center gap-3"
+                className="bg-blue-600 hover:bg-blue-700 text-white px-12 py-5 rounded-2xl font-black tracking-widest border border-blue-700 transition-all active:scale-95 flex items-center gap-3 shadow-xl"
               >
                 <Save className="w-6 h-6" /> SALVAR DADOS
               </button>
@@ -362,33 +366,33 @@ export default function Settings() {
         </motion.div>
 
         {/* Menu Organization Section */}
-        <motion.div variants={itemVariants} className="bg-white/5 backdrop-blur-md rounded-3xl border border-white/10 p-8 shadow-2xl">
-          <h2 className="text-2xl font-bold mb-8 flex items-center gap-3">
-            <LayoutIcon className="w-6 h-6 text-orange-400" />
+        <motion.div variants={itemVariants} className="bg-zinc-50 rounded-3xl border border-zinc-200 p-8 shadow-xl">
+          <h2 className="text-2xl font-bold mb-8 flex items-center gap-3 text-zinc-900">
+            <LayoutIcon className="w-6 h-6 text-orange-600" />
             Organização do Menu
           </h2>
-          <p className="text-lg text-white/60 font-light mb-8">
+          <p className="text-lg text-zinc-500 font-light mb-8">
             Altere a ordem dos itens no menu lateral para facilitar seu fluxo de trabalho.
           </p>
           
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {menuOrder.map((id, index) => (
-              <div key={id} className="flex items-center justify-between p-5 bg-white/5 rounded-2xl border border-white/10 group hover:bg-white/10 transition-all">
-                <span className="font-bold text-lg text-white/80">
+              <div key={id} className="flex items-center justify-between p-5 bg-white rounded-2xl border border-zinc-200 group hover:bg-zinc-50 transition-all">
+                <span className="font-bold text-lg text-zinc-700">
                   {menuLabels[id] || id}
                 </span>
                 <div className="flex gap-2">
                   <button 
                     onClick={() => moveMenuItem(index, 'up')}
                     disabled={index === 0}
-                    className="p-2 hover:bg-white/20 rounded-xl transition-all disabled:opacity-10 text-white/40 hover:text-white"
+                    className="p-2 hover:bg-zinc-100 rounded-xl transition-all disabled:opacity-10 text-zinc-400 hover:text-zinc-600"
                   >
                     <ChevronUp className="w-6 h-6" />
                   </button>
                   <button 
                     onClick={() => moveMenuItem(index, 'down')}
                     disabled={index === menuOrder.length - 1}
-                    className="p-2 hover:bg-white/20 rounded-xl transition-all disabled:opacity-10 text-white/40 hover:text-white"
+                    className="p-2 hover:bg-zinc-100 rounded-xl transition-all disabled:opacity-10 text-zinc-400 hover:text-zinc-600"
                   >
                     <ChevronDown className="w-6 h-6" />
                   </button>
@@ -399,19 +403,19 @@ export default function Settings() {
         </motion.div>
 
         {/* Backup Section */}
-        <motion.div variants={itemVariants} className="bg-white/5 backdrop-blur-md rounded-3xl border border-white/10 p-8 shadow-2xl">
-          <h2 className="text-2xl font-bold mb-8 flex items-center gap-3">
-            <Database className="w-6 h-6 text-rose-400" />
+        <motion.div variants={itemVariants} className="bg-zinc-50 rounded-3xl border border-zinc-200 p-8 shadow-xl">
+          <h2 className="text-2xl font-bold mb-8 flex items-center gap-3 text-zinc-900">
+            <Database className="w-6 h-6 text-rose-600" />
             Backup e Restauração
           </h2>
-          <p className="text-lg text-white/60 font-light mb-8">
+          <p className="text-lg text-zinc-500 font-light mb-8">
             Gere uma cópia de segurança de todos os seus dados para salvar em outro local ou restaurar em caso de necessidade.
           </p>
           
           <div className="flex flex-wrap gap-6">
             <button 
               onClick={handleExportBackup}
-              className="bg-white/10 hover:bg-white/20 text-white px-8 py-5 rounded-2xl font-bold border border-white/20 backdrop-blur-md transition-all flex items-center gap-3 active:scale-95"
+              className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-5 rounded-2xl font-bold border border-blue-700 transition-all flex items-center gap-3 active:scale-95 shadow-lg"
             >
               <Download className="w-6 h-6" /> GERAR BACKUP COMPLETO
             </button>
@@ -426,16 +430,16 @@ export default function Settings() {
               />
               <button 
                 onClick={() => backupInputRef.current?.click()}
-                className="bg-white/5 hover:bg-white/10 text-white/60 hover:text-white px-8 py-5 rounded-2xl font-bold border border-white/10 transition-all flex items-center gap-3 active:scale-95"
+                className="bg-zinc-100 hover:bg-zinc-200 text-zinc-500 hover:text-zinc-900 px-8 py-5 rounded-2xl font-bold border border-zinc-200 transition-all flex items-center gap-3 active:scale-95"
               >
                 <FileUp className="w-6 h-6" /> RESTAURAR BACKUP
               </button>
             </div>
           </div>
           
-          <div className="mt-10 p-6 bg-amber-500/10 border border-amber-500/20 rounded-2xl">
-            <p className="text-amber-200/80 leading-relaxed">
-              <strong className="text-amber-400 uppercase tracking-widest text-xs block mb-2">Aviso Importante</strong>
+          <div className="mt-10 p-6 bg-amber-50 border border-amber-100 rounded-2xl">
+            <p className="text-amber-800 leading-relaxed">
+              <strong className="text-amber-600 uppercase tracking-widest text-xs block mb-2">Aviso Importante</strong>
               Ao restaurar um backup, todos os dados atuais do sistema serão substituídos pelos dados contidos no arquivo. Recomendamos gerar um backup dos dados atuais antes de realizar uma restauração.
             </p>
           </div>

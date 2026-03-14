@@ -217,6 +217,20 @@ export default function TicketView() {
           </div>
         )}
 
+        {/* Fotos do Serviço */}
+        {ticket.images && ticket.images.length > 0 && (
+          <div className="mt-8 break-inside-avoid">
+            <h3 className="text-sm font-bold text-gray-500 dark:text-zinc-400 uppercase tracking-wider mb-4 border-b dark:border-zinc-800 pb-1">Fotos do Serviço</h3>
+            <div className="grid grid-cols-2 gap-4">
+              {ticket.images.map((img, index) => (
+                <div key={index} className="rounded-lg overflow-hidden border border-gray-200 dark:border-zinc-800">
+                  <img src={img} alt={`Foto ${index + 1}`} className="w-full h-auto" />
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Assinaturas */}
         <div className="mt-16 pt-8 grid grid-cols-2 gap-8 break-inside-avoid">
           <div className="text-center">

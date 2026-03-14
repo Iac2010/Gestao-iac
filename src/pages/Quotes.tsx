@@ -165,10 +165,18 @@ export default function Quotes() {
   };
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-white text-zinc-900 -m-8 p-8 md:p-12 overflow-x-hidden relative">
+      {/* Background Decorative Elements */}
+      <div className="absolute inset-0 opacity-20 pointer-events-none overflow-hidden">
+        <svg className="w-full h-full" viewBox="0 0 1000 1000" xmlns="http://www.w3.org/2000/svg">
+          <path d="M0,1000 C300,800 400,900 1000,600 L1000,1000 L0,1000 Z" fill="currentColor" className="text-zinc-200" fillOpacity="0.1" />
+          <path d="M0,800 C200,600 500,700 1000,400 L1000,800 L0,800 Z" fill="currentColor" className="text-zinc-100" fillOpacity="0.05" />
+        </svg>
+      </div>
+
       {isGenerating && (
-        <div className="fixed inset-0 bg-white/80 backdrop-blur-sm z-[9999] flex flex-col items-center justify-center">
-          <div className="w-16 h-16 border-4 border-red-600 border-t-transparent rounded-full animate-spin mb-4"></div>
+        <div className="fixed inset-0 bg-white/90 backdrop-blur-sm z-[9999] flex flex-col items-center justify-center">
+          <div className="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mb-4"></div>
           <p className="text-zinc-900 font-black uppercase tracking-widest text-sm">Gerando Documento de Alta Qualidade...</p>
           <p className="text-zinc-400 text-xs mt-2">Isso pode levar alguns segundos</p>
         </div>
@@ -179,16 +187,16 @@ export default function Quotes() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            className="max-w-7xl mx-auto"
+            className="max-w-7xl mx-auto relative z-10"
           >
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
               <div>
-                <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Orçamentos</h1>
-                <p className="text-gray-600 dark:text-gray-400 mt-1">Propostas comerciais e faturamento</p>
+                <h1 className="text-3xl font-bold text-zinc-900">Orçamentos</h1>
+                <p className="text-zinc-500 mt-1">Propostas comerciais e faturamento</p>
               </div>
               <button 
                 onClick={() => setIsCreating(true)}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2"
+                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 shadow-lg shadow-blue-500/20"
               >
                 <Plus className="w-4 h-4" /> 
                 <span>Novo Orçamento</span>
@@ -197,34 +205,34 @@ export default function Quotes() {
 
             {/* Dashboard Cards */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-              <div className="bg-white dark:bg-zinc-900 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-zinc-800">
+              <div className="bg-zinc-50 p-6 rounded-xl shadow-sm border border-zinc-200">
                 <div className="flex items-center justify-between mb-4">
-                  <div className="p-3 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 rounded-lg">
+                  <div className="p-3 bg-blue-50 text-blue-600 rounded-lg">
                     <FileText className="w-6 h-6" />
                   </div>
-                  <span className="text-2xl font-bold text-gray-900 dark:text-white">{quotes.length}</span>
+                  <span className="text-2xl font-bold text-zinc-900">{quotes.length}</span>
                 </div>
-                <h3 className="text-gray-600 dark:text-gray-400 font-medium">Total de Orçamentos</h3>
+                <h3 className="text-zinc-500 font-medium">Total de Orçamentos</h3>
               </div>
               
-              <div className="bg-white dark:bg-zinc-900 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-zinc-800">
+              <div className="bg-zinc-50 p-6 rounded-xl shadow-sm border border-zinc-200">
                 <div className="flex items-center justify-between mb-4">
-                  <div className="p-3 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 rounded-lg">
+                  <div className="p-3 bg-emerald-50 text-emerald-600 rounded-lg">
                     <CheckCircle className="w-6 h-6" />
                   </div>
-                  <span className="text-2xl font-bold text-gray-900 dark:text-white">{approvedQuotes.length}</span>
+                  <span className="text-2xl font-bold text-zinc-900">{approvedQuotes.length}</span>
                 </div>
-                <h3 className="text-gray-600 dark:text-gray-400 font-medium">Aprovados</h3>
+                <h3 className="text-zinc-500 font-medium">Aprovados</h3>
               </div>
               
-              <div className="bg-white dark:bg-zinc-900 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-zinc-800">
+              <div className="bg-zinc-50 p-6 rounded-xl shadow-sm border border-zinc-200">
                 <div className="flex items-center justify-between mb-4">
-                  <div className="p-3 bg-orange-50 dark:bg-orange-900/20 text-orange-600 dark:text-orange-400 rounded-lg">
+                  <div className="p-3 bg-orange-50 text-orange-600 rounded-lg">
                     <Clock className="w-6 h-6" />
                   </div>
-                  <span className="text-2xl font-bold text-gray-900 dark:text-white">{pendingQuotes.length}</span>
+                  <span className="text-2xl font-bold text-zinc-900">{pendingQuotes.length}</span>
                 </div>
-                <h3 className="text-gray-600 dark:text-gray-400 font-medium">Aguardando Aprovação</h3>
+                <h3 className="text-zinc-500 font-medium">Aguardando Aprovação</h3>
               </div>
             </div>
 
@@ -234,17 +242,17 @@ export default function Quotes() {
                 const client = clients.find(c => c.id === quote.clientId);
                 
                 const statusColors = {
-                  DRAFT: 'bg-gray-100 text-gray-800 dark:bg-zinc-800 dark:text-gray-300',
-                  SENT: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400',
-                  APPROVED: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400',
-                  REJECTED: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
+                  DRAFT: 'bg-zinc-100 text-zinc-800',
+                  SENT: 'bg-blue-100 text-blue-800',
+                  APPROVED: 'bg-emerald-100 text-emerald-800',
+                  REJECTED: 'bg-red-100 text-red-800'
                 };
 
                 return (
                   <motion.div
                     key={quote.id}
                     whileHover={{ y: -4 }}
-                    className="bg-white dark:bg-zinc-900 rounded-xl shadow-sm border border-gray-100 dark:border-zinc-800 p-6 flex flex-col justify-between min-h-[220px] group transition-all"
+                    className="bg-zinc-50 rounded-xl shadow-sm border border-zinc-200 p-6 flex flex-col justify-between min-h-[220px] group transition-all"
                   >
                     <div>
                       <div className="flex justify-between items-start mb-4">
@@ -253,24 +261,24 @@ export default function Quotes() {
                            quote.status === 'SENT' ? 'Enviado' :
                            quote.status === 'APPROVED' ? 'Aprovado' : 'Rejeitado'}
                         </span>
-                        <span className="text-sm text-gray-500 dark:text-gray-400">
+                        <span className="text-sm text-zinc-400">
                           {new Date(quote.date).toLocaleDateString('pt-BR')}
                         </span>
                       </div>
-                      <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-1 line-clamp-1" title={client?.name || 'Cliente Desconhecido'}>
+                      <h3 className="text-lg font-bold text-zinc-900 mb-1 line-clamp-1" title={client?.name || 'Cliente Desconhecido'}>
                         {client?.name || 'Cliente Desconhecido'}
                       </h3>
-                      <p className="text-sm text-gray-500 dark:text-gray-400 mb-4 font-mono">#{quote.id.substring(0, 8)}</p>
-                      <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                      <p className="text-sm text-zinc-400 mb-4 font-mono">#{quote.id.substring(0, 8)}</p>
+                      <p className="text-2xl font-bold text-zinc-900">
                         {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(quote.totalValue)}
                       </p>
                     </div>
 
-                    <div className="mt-6 pt-4 border-t border-gray-100 dark:border-zinc-800 flex items-center justify-between">
+                    <div className="mt-6 pt-4 border-t border-zinc-200 flex items-center justify-between">
                       <select 
                         value={quote.status}
                         onChange={(e) => handleStatusChange(quote, e.target.value as Quote['status'])}
-                        className="text-sm bg-gray-50 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 text-gray-700 dark:text-gray-300 rounded-lg px-2 py-1.5 outline-none focus:ring-2 focus:ring-blue-500/20"
+                        className="text-sm bg-white border border-zinc-200 text-zinc-700 rounded-lg px-2 py-1.5 outline-none focus:ring-2 focus:ring-blue-500/20"
                       >
                         <option value="DRAFT">Rascunho</option>
                         <option value="SENT">Enviado</option>
@@ -281,14 +289,14 @@ export default function Quotes() {
                       <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                         <button 
                           onClick={() => setViewingQuote(quote)}
-                          className="p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-md transition-colors"
+                          className="p-1.5 text-zinc-400 hover:text-blue-600 hover:bg-blue-50 rounded-md transition-colors"
                           title="Visualizar"
                         >
                           <Eye className="w-4 h-4" />
                         </button>
                         <button 
                           onClick={() => handlePrintQuote(quote)}
-                          className="p-1.5 text-gray-400 hover:text-gray-900 hover:bg-gray-100 dark:hover:text-white dark:hover:bg-zinc-800 rounded-md transition-colors"
+                          className="p-1.5 text-zinc-400 hover:text-zinc-900 hover:bg-zinc-100 rounded-md transition-colors"
                           title="Imprimir"
                         >
                           <Printer className="w-4 h-4" />
@@ -296,7 +304,7 @@ export default function Quotes() {
                         <button 
                           onClick={() => handleDownloadPdf(quote)}
                           disabled={isGenerating}
-                          className="p-1.5 text-gray-400 hover:text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 rounded-md transition-colors"
+                          className="p-1.5 text-zinc-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-md transition-colors"
                           title="Baixar PDF"
                         >
                           <Download className="w-4 h-4" />
@@ -307,7 +315,7 @@ export default function Quotes() {
                               deleteQuote(quote.id);
                             }
                           }}
-                          className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-md transition-colors"
+                          className="p-1.5 text-zinc-400 hover:text-red-600 hover:bg-red-50 rounded-md transition-colors"
                           title="Excluir"
                         >
                           <Trash2 className="w-4 h-4" />
@@ -318,7 +326,7 @@ export default function Quotes() {
                 );
               })}
               {quotes.length === 0 && (
-                <div className="col-span-full p-12 bg-zinc-100 dark:bg-zinc-800/50 rounded-xl border-2 border-dashed border-zinc-300 dark:border-zinc-700 flex flex-col items-center justify-center text-zinc-500 dark:text-zinc-400">
+                <div className="col-span-full p-12 bg-zinc-50 rounded-xl border-2 border-dashed border-zinc-200 flex flex-col items-center justify-center text-zinc-400">
                   <FileText className="w-12 h-12 mb-4 opacity-50" />
                   <p className="text-lg font-bold">Nenhum orçamento encontrado</p>
                   <p className="text-sm">Crie um novo orçamento para começar</p>
@@ -331,24 +339,24 @@ export default function Quotes() {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -20 }}
-            className="p-6 md:p-12 max-w-7xl mx-auto"
+            className="p-6 md:p-12 max-w-7xl mx-auto relative z-10"
           >
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12">
               <div className="flex items-center gap-6">
                 <button 
                   onClick={() => setIsCreating(false)}
-                  className="p-3 bg-white/10 hover:bg-white/20 rounded-2xl text-white transition-all active:scale-95"
+                  className="p-3 bg-zinc-100 hover:bg-zinc-200 rounded-2xl text-zinc-900 transition-all active:scale-95 border border-zinc-200"
                 >
                   <ArrowLeft className="w-6 h-6" />
                 </button>
                 <div>
-                  <h1 className="text-4xl font-black text-white tracking-tighter">Nova Proposta</h1>
-                  <p className="text-blue-200 font-bold mt-1 uppercase text-[10px] tracking-widest">Configure os itens e o cliente</p>
+                  <h1 className="text-4xl font-black text-zinc-900 tracking-tighter">Nova Proposta</h1>
+                  <p className="text-zinc-400 font-bold mt-1 uppercase text-[10px] tracking-widest">Configure os itens e o cliente</p>
                 </div>
               </div>
               <button 
                 onClick={handleSave}
-                className="w-full md:w-auto bg-zinc-900 text-white px-10 py-4 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-zinc-800 transition-all active:scale-95 shadow-xl shadow-zinc-200 flex items-center justify-center gap-3"
+                className="w-full md:w-auto bg-blue-600 hover:bg-blue-700 text-white px-10 py-4 rounded-2xl font-black text-xs uppercase tracking-widest transition-all active:scale-95 shadow-xl shadow-blue-500/20 flex items-center justify-center gap-3"
               >
                 <Save className="w-6 h-6" /> 
                 <span>FINALIZAR ORÇAMENTO</span>
@@ -358,7 +366,7 @@ export default function Quotes() {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
               {/* Left Column: Config */}
               <div className="lg:col-span-1 space-y-8">
-                <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                <div className="bg-zinc-50 rounded-xl shadow-sm border border-zinc-200 p-6">
                   <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400 mb-8">Informações Base</h3>
                   
                   <div className="space-y-6">
@@ -367,7 +375,7 @@ export default function Quotes() {
                       <select 
                         value={clientId}
                         onChange={(e) => setClientId(e.target.value)}
-                        className="w-full bg-zinc-50 border-2 border-transparent focus:border-primary focus:bg-white rounded-2xl px-6 py-4 outline-none font-bold text-zinc-900 transition-all"
+                        className="w-full bg-white border-2 border-zinc-200 focus:border-blue-500 focus:bg-white rounded-2xl px-6 py-4 outline-none font-bold text-zinc-900 transition-all"
                       >
                         <option value="">Selecione um cliente...</option>
                         {clients.map(c => (
@@ -388,7 +396,7 @@ export default function Quotes() {
                       />
                       <label 
                         htmlFor="csv-upload"
-                        className="w-full flex flex-col items-center justify-center gap-4 border-2 border-dashed border-zinc-100 rounded-[2rem] p-10 text-zinc-300 hover:border-primary hover:text-primary cursor-pointer transition-all group bg-zinc-50/50"
+                        className="w-full flex flex-col items-center justify-center gap-4 border-2 border-dashed border-zinc-200 rounded-[2rem] p-10 text-zinc-300 hover:border-blue-500 hover:text-blue-500 cursor-pointer transition-all group bg-white"
                       >
                         <FileSpreadsheet className="w-10 h-10 group-hover:scale-110 transition-transform duration-300" />
                         <span className="text-[10px] font-black uppercase tracking-widest">Carregar Planilha</span>
@@ -397,7 +405,7 @@ export default function Quotes() {
                   </div>
                 </div>
 
-                <div className="bg-gray-900 rounded-xl p-8 text-white shadow-xl relative overflow-hidden group">
+                <div className="bg-zinc-900 rounded-xl p-8 text-white shadow-xl relative overflow-hidden group">
                   <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2 group-hover:scale-150 transition-transform duration-700"></div>
                   <h3 className="text-[10px] font-black uppercase tracking-[0.25em] text-zinc-500 mb-8">Resumo Financeiro</h3>
                   <div className="space-y-6 relative z-10">
@@ -421,8 +429,8 @@ export default function Quotes() {
 
               {/* Right Column: Items */}
               <div className="lg:col-span-2">
-                <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-                  <div className="p-8 border-b border-zinc-50 bg-zinc-50/30 flex flex-col sm:flex-row justify-between items-center gap-6">
+                <div className="bg-zinc-50 rounded-xl shadow-sm border border-zinc-200 overflow-hidden">
+                  <div className="p-8 border-b border-zinc-200 bg-zinc-100/50 flex flex-col sm:flex-row justify-between items-center gap-6">
                     <h2 className="text-2xl font-black text-zinc-900 tracking-tight">Itens da Proposta</h2>
                     <div className="flex gap-3 w-full sm:w-auto">
                       <select 
@@ -434,7 +442,7 @@ export default function Quotes() {
                           }
                           e.target.value = '';
                         }}
-                        className="flex-1 bg-white border-2 border-zinc-100 rounded-2xl px-6 py-3 text-[10px] font-black uppercase tracking-widest focus:border-primary outline-none transition-all shadow-sm"
+                        className="flex-1 bg-white border-2 border-zinc-200 rounded-2xl px-6 py-3 text-[10px] font-black uppercase tracking-widest focus:border-blue-500 outline-none transition-all shadow-sm"
                       >
                         <option value="">Catálogo...</option>
                         {products.map(p => (
@@ -443,7 +451,7 @@ export default function Quotes() {
                       </select>
                       <button 
                         onClick={addItem}
-                        className="bg-zinc-900 text-white p-4 rounded-2xl hover:bg-zinc-800 transition-all active:scale-95 shadow-lg shadow-zinc-200"
+                        className="bg-blue-600 hover:bg-blue-700 text-white p-4 rounded-2xl transition-all active:scale-95 shadow-lg shadow-blue-500/20"
                         title="Adicionar Manual"
                       >
                         <Plus className="w-6 h-6" />
@@ -454,7 +462,7 @@ export default function Quotes() {
                   <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse">
                       <thead>
-                        <tr className="bg-zinc-50/50 text-zinc-400 text-[10px] uppercase tracking-wider font-black">
+                        <tr className="bg-zinc-100/50 text-zinc-400 text-[10px] uppercase tracking-wider font-black">
                           <th className="p-6">Descrição</th>
                           <th className="p-6 w-24 text-center">Qtd</th>
                           <th className="p-6 w-32 text-right">Unitário</th>
@@ -462,15 +470,15 @@ export default function Quotes() {
                           <th className="p-6 w-16"></th>
                         </tr>
                       </thead>
-                      <tbody className="divide-y divide-zinc-50">
+                      <tbody className="divide-y divide-zinc-200">
                         {items.map((item) => (
-                          <tr key={item.id} className="group hover:bg-zinc-50/30 transition-colors">
+                          <tr key={item.id} className="group hover:bg-zinc-100/30 transition-colors">
                             <td className="p-4">
                               <input 
                                 type="text" 
                                 value={item.description}
                                 onChange={(e) => updateItem(item.id, 'description', e.target.value)}
-                                className="w-full bg-transparent border-2 border-transparent rounded-xl px-4 py-3 text-sm font-black text-zinc-900 focus:bg-white focus:border-primary outline-none transition-all"
+                                className="w-full bg-transparent border-2 border-transparent rounded-xl px-4 py-3 text-sm font-black text-zinc-900 focus:bg-white focus:border-blue-500 outline-none transition-all"
                                 placeholder="Nome do serviço ou produto"
                               />
                             </td>
@@ -479,7 +487,7 @@ export default function Quotes() {
                                 type="number" 
                                 value={item.quantity}
                                 onChange={(e) => updateItem(item.id, 'quantity', parseFloat(e.target.value) || 0)}
-                                className="w-full bg-transparent border-2 border-transparent rounded-xl px-4 py-3 text-sm font-mono font-bold text-center text-zinc-500 focus:bg-white focus:border-primary outline-none transition-all"
+                                className="w-full bg-transparent border-2 border-transparent rounded-xl px-4 py-3 text-sm font-mono font-bold text-center text-zinc-500 focus:bg-white focus:border-blue-500 outline-none transition-all"
                                 min="1"
                               />
                             </td>
@@ -488,7 +496,7 @@ export default function Quotes() {
                                 type="number" 
                                 value={item.unitPrice}
                                 onChange={(e) => updateItem(item.id, 'unitPrice', parseFloat(e.target.value) || 0)}
-                                className="w-full bg-transparent border-2 border-transparent rounded-xl px-4 py-3 text-sm font-mono font-bold text-right text-zinc-500 focus:bg-white focus:border-primary outline-none transition-all"
+                                className="w-full bg-transparent border-2 border-transparent rounded-xl px-4 py-3 text-sm font-mono font-bold text-right text-zinc-500 focus:bg-white focus:border-blue-500 outline-none transition-all"
                                 min="0"
                                 step="0.01"
                               />
@@ -539,41 +547,41 @@ export default function Quotes() {
           <div className="space-y-8">
             <div className="flex justify-between items-start">
               <div>
-                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 mb-1">Cliente</p>
-                <h3 className="text-2xl font-black text-gray-900 dark:text-white">
+                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400 mb-1">Cliente</p>
+                <h3 className="text-2xl font-black text-zinc-900">
                   {clients.find(c => c.id === viewingQuote.clientId)?.name}
                 </h3>
-                <p className="text-sm text-gray-500 font-mono mt-1">
+                <p className="text-sm text-zinc-500 font-mono mt-1">
                   Emitido em {new Date(viewingQuote.date).toLocaleDateString('pt-BR')}
                 </p>
               </div>
               <div className="text-right">
-                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 mb-1">Valor Total</p>
-                <p className="text-3xl font-black text-red-600">
+                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400 mb-1">Valor Total</p>
+                <p className="text-3xl font-black text-blue-600">
                   {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(viewingQuote.totalValue)}
                 </p>
               </div>
             </div>
 
-            <div className="bg-gray-50 dark:bg-zinc-800/50 rounded-2xl overflow-hidden border border-gray-100 dark:border-zinc-800">
+            <div className="bg-zinc-50 rounded-2xl overflow-hidden border border-zinc-200">
               <table className="w-full text-left">
                 <thead>
-                  <tr className="text-[10px] font-black uppercase tracking-widest text-gray-400 border-b border-gray-100 dark:border-zinc-800">
+                  <tr className="text-[10px] font-black uppercase tracking-widest text-zinc-400 border-b border-zinc-200">
                     <th className="p-4">Item / Descrição</th>
                     <th className="p-4 text-center">Qtd</th>
                     <th className="p-4 text-right">Unitário</th>
                     <th className="p-4 text-right">Total</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-100 dark:divide-zinc-800">
+                <tbody className="divide-y divide-zinc-200">
                   {viewingQuote.items.map((item) => (
                     <tr key={item.id}>
-                      <td className="p-4 text-sm font-bold text-gray-900 dark:text-zinc-100">{item.description}</td>
-                      <td className="p-4 text-sm text-center text-gray-600 dark:text-zinc-400 font-mono">{item.quantity}</td>
-                      <td className="p-4 text-sm text-right text-gray-600 dark:text-zinc-400 font-mono">
+                      <td className="p-4 text-sm font-bold text-zinc-900">{item.description}</td>
+                      <td className="p-4 text-sm text-center text-zinc-500 font-mono">{item.quantity}</td>
+                      <td className="p-4 text-sm text-right text-zinc-500 font-mono">
                         {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(item.unitPrice)}
                       </td>
-                      <td className="p-4 text-sm text-right font-black text-gray-900 dark:text-zinc-100 font-mono">
+                      <td className="p-4 text-sm text-right font-black text-zinc-900 font-mono">
                         {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(item.total)}
                       </td>
                     </tr>
@@ -585,13 +593,13 @@ export default function Quotes() {
             <div className="flex gap-3 pt-4">
               <button 
                 onClick={() => handleDownloadPdf(viewingQuote)}
-                className="flex-1 bg-zinc-900 dark:bg-white dark:text-zinc-900 text-white py-3 rounded-xl font-bold flex items-center justify-center gap-2 hover:scale-[1.02] transition-transform"
+                className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-bold flex items-center justify-center gap-2 hover:scale-[1.02] transition-transform shadow-lg shadow-blue-500/20"
               >
                 <Printer className="w-5 h-5" /> Imprimir Proposta
               </button>
               <button 
                 onClick={() => setViewingQuote(null)}
-                className="px-8 py-3 bg-gray-100 dark:bg-zinc-800 text-gray-600 dark:text-zinc-400 rounded-xl font-bold hover:bg-gray-200 transition-colors"
+                className="px-8 py-3 bg-zinc-100 text-zinc-600 rounded-xl font-bold hover:bg-zinc-200 transition-colors"
               >
                 Fechar
               </button>
