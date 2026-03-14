@@ -57,46 +57,54 @@ export default function ChecklistManager() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto">
-      <div className="flex items-center justify-between mb-8">
+    <div className="min-h-screen bg-[#004a7c] text-white -m-8 p-8 md:p-12 overflow-x-hidden relative">
+      {/* Background Decorative Elements */}
+      <div className="absolute inset-0 opacity-20 pointer-events-none overflow-hidden">
+        <svg className="w-full h-full" viewBox="0 0 1000 1000" xmlns="http://www.w3.org/2000/svg">
+          <path d="M0,1000 C300,800 400,900 1000,600 L1000,1000 L0,1000 Z" fill="white" fillOpacity="0.1" />
+          <path d="M0,800 C200,600 500,700 1000,400 L1000,800 L0,800 Z" fill="white" fillOpacity="0.05" />
+        </svg>
+      </div>
+
+      <div className="flex items-center justify-between mb-12 relative z-10">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Checklist</h1>
-          <p className="text-gray-600 dark:text-gray-400 mt-1">Configuração de tarefas preventivas</p>
+          <h1 className="text-6xl font-light tracking-tight">Checklist</h1>
+          <p className="text-xl opacity-60 mt-2 font-light">Configuração de tarefas preventivas</p>
         </div>
         <button 
           onClick={() => openModal()}
-          className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2"
+          className="bg-white/10 hover:bg-white/20 text-white px-8 py-4 flex items-center gap-3 border border-white/20 backdrop-blur-md transition-all group"
         >
-          <Plus className="w-4 h-4" /> 
-          Nova Tarefa
+          <Plus className="w-6 h-6 group-hover:rotate-90 transition-transform" /> 
+          <span className="text-lg font-medium">Nova Tarefa</span>
         </button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 relative z-10">
         {checklistItems.map(item => {
           const itemClientIds = item.clientIds || (item.clientId ? [item.clientId] : []);
           const assignedClients = clients.filter(c => itemClientIds.includes(c.id));
           
           return (
-            <div key={item.id} className="bg-white dark:bg-zinc-900 rounded-xl shadow-sm border border-gray-100 dark:border-zinc-800 p-6 flex flex-col">
+            <div key={item.id} className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6 flex flex-col hover:bg-white/10 transition-all group">
               <div className="flex justify-between items-start mb-4">
                 <div>
-                  <span className="inline-block bg-gray-100 dark:bg-zinc-800 text-gray-600 dark:text-gray-400 px-2.5 py-1 rounded-md text-xs font-medium mb-2">
+                  <span className="inline-block bg-white/10 text-white/60 px-2.5 py-1 rounded-md text-xs font-bold uppercase tracking-wider mb-2">
                     {item.category}
                   </span>
-                  <h3 className="text-lg font-bold text-gray-900 dark:text-white line-clamp-2">{item.task}</h3>
+                  <h3 className="text-xl font-bold text-white line-clamp-2">{item.task}</h3>
                 </div>
-                <div className="flex gap-2 shrink-0 ml-4">
+                <div className="flex gap-2 shrink-0 ml-4 opacity-0 group-hover:opacity-100 transition-opacity">
                   <button 
                     onClick={() => openModal(item)}
-                    className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors"
+                    className="p-2 text-white/40 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
                     title="Editar"
                   >
                     <Edit2 className="w-4 h-4" />
                   </button>
                   <button 
                     onClick={() => setItemToDelete(item.id)}
-                    className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
+                    className="p-2 text-white/40 hover:text-red-400 hover:bg-red-400/10 rounded-lg transition-colors"
                     title="Excluir"
                   >
                     <Trash2 className="w-4 h-4" />
@@ -104,12 +112,14 @@ export default function ChecklistManager() {
                 </div>
               </div>
               
-              <div className="mt-auto pt-4 border-t border-gray-100 dark:border-zinc-800">
-                <p className="text-sm text-gray-500 dark:text-gray-400">
-                  <span className="font-medium text-gray-700 dark:text-gray-300">Atribuído a: </span>
-                  {assignedClients.length > 0 
-                    ? assignedClients.map(c => c.name).join(', ') 
-                    : 'Todos (Global)'}
+              <div className="mt-auto pt-4 border-t border-white/10">
+                <p className="text-sm text-white/50">
+                  <span className="font-bold uppercase tracking-wider text-[10px] block mb-1">Atribuído a:</span>
+                  <span className="text-white/80">
+                    {assignedClients.length > 0 
+                      ? assignedClients.map(c => c.name).join(', ') 
+                      : 'Todos (Global)'}
+                  </span>
                 </p>
               </div>
             </div>
@@ -117,8 +127,12 @@ export default function ChecklistManager() {
         })}
 
         {checklistItems.length === 0 && (
-          <div className="col-span-full py-12 text-center text-gray-500 dark:text-gray-400 bg-white dark:bg-zinc-900 rounded-xl border border-dashed border-gray-200 dark:border-zinc-800">
-            Nenhuma tarefa configurada. Clique em "Nova Tarefa" para começar.
+          <div className="col-span-full py-24 text-center bg-white/5 backdrop-blur-md border border-dashed border-white/20 rounded-2xl">
+            <div className="inline-flex items-center justify-center w-20 h-20 bg-white/10 rounded-full mb-6">
+              <CheckSquare className="w-10 h-10 text-white/20" />
+            </div>
+            <h3 className="text-2xl font-light opacity-60">Nenhuma tarefa configurada</h3>
+            <p className="opacity-40 mt-2">Clique em "Nova Tarefa" para começar.</p>
           </div>
         )}
       </div>
@@ -128,28 +142,29 @@ export default function ChecklistManager() {
         onClose={closeModal} 
         title={editingId ? 'Editar Tarefa' : 'Nova Tarefa'}
         maxWidth="md"
+        glass
       >
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-6 p-2">
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-zinc-300 mb-1">Descrição da Tarefa *</label>
+            <label className="block text-sm font-bold uppercase tracking-wider text-white/50 mb-2">Descrição da Tarefa *</label>
             <input 
               required
               type="text" 
               value={formData.task}
               onChange={e => setFormData({...formData, task: e.target.value})}
-              className="w-full border border-gray-300 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white rounded-lg px-4 py-2 focus:ring-2 focus:ring-red-500 outline-none"
+              className="w-full bg-white/5 border border-white/10 focus:border-white/30 rounded-xl px-4 py-3 outline-none transition-all text-white placeholder:text-white/30"
               placeholder="Ex: Verificar iluminação de emergência"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-zinc-300 mb-1">Categoria *</label>
+            <label className="block text-sm font-bold uppercase tracking-wider text-white/50 mb-2">Categoria *</label>
             <input 
               required
               type="text" 
               list="categories"
               value={formData.category}
               onChange={e => setFormData({...formData, category: e.target.value})}
-              className="w-full border border-gray-300 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white rounded-lg px-4 py-2 focus:ring-2 focus:ring-red-500 outline-none"
+              className="w-full bg-white/5 border border-white/10 focus:border-white/30 rounded-xl px-4 py-3 outline-none transition-all text-white placeholder:text-white/30"
               placeholder="Ex: Elétrica, Hidráulica, Segurança..."
             />
             <datalist id="categories">
@@ -159,20 +174,22 @@ export default function ChecklistManager() {
             </datalist>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-zinc-300 mb-2">Atribuir a Clientes (Opcional)</label>
-            <div className="max-h-48 overflow-y-auto border border-gray-200 dark:border-zinc-700 rounded-lg p-2 space-y-1 bg-gray-50 dark:bg-zinc-800/50">
-              <label className="flex items-center gap-3 p-2 hover:bg-gray-100 dark:hover:bg-zinc-700 rounded-md cursor-pointer transition-colors">
+            <label className="block text-sm font-bold uppercase tracking-wider text-white/50 mb-4">Atribuir a Clientes (Opcional)</label>
+            <div className="max-h-64 overflow-y-auto border border-white/10 rounded-xl p-4 space-y-2 bg-white/5">
+              <label className="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg cursor-pointer transition-colors">
                 <input 
                   type="checkbox"
                   checked={formData.clientIds.length === 0}
                   onChange={() => setFormData({...formData, clientIds: []})}
-                  className="w-4 h-4 text-red-600 rounded border-gray-300 focus:ring-red-500"
+                  className="w-5 h-5 rounded border-white/20 bg-white/5 text-white focus:ring-white/30"
                 />
-                <span className="text-sm font-medium text-gray-900 dark:text-white">Todos (Checklist Global)</span>
+                <span className="text-sm font-bold text-white">Todos (Checklist Global)</span>
               </label>
               
+              <div className="h-px bg-white/10 my-2" />
+
               {clients.map(client => (
-                <label key={client.id} className="flex items-center gap-3 p-2 hover:bg-gray-100 dark:hover:bg-zinc-700 rounded-md cursor-pointer transition-colors">
+                <label key={client.id} className="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg cursor-pointer transition-colors">
                   <input 
                     type="checkbox"
                     checked={formData.clientIds.includes(client.id)}
@@ -183,29 +200,29 @@ export default function ChecklistManager() {
                         setFormData({...formData, clientIds: formData.clientIds.filter(id => id !== client.id)});
                       }
                     }}
-                    className="w-4 h-4 text-red-600 rounded border-gray-300 focus:ring-red-500"
+                    className="w-5 h-5 rounded border-white/20 bg-white/5 text-white focus:ring-white/30"
                   />
-                  <span className="text-sm text-gray-700 dark:text-zinc-300">{client.name}</span>
+                  <span className="text-sm text-white/70">{client.name}</span>
                 </label>
               ))}
             </div>
-            <p className="text-xs text-gray-500 dark:text-zinc-400 mt-2">
+            <p className="text-xs text-white/30 mt-3">
               Se nenhum for selecionado, a tarefa aparecerá para todos.
             </p>
           </div>
-          <div className="pt-4 flex justify-end gap-2">
+          <div className="pt-6 flex justify-end gap-3">
             <button 
               type="button"
               onClick={closeModal}
-              className="px-4 py-2 text-gray-700 dark:text-zinc-300 hover:bg-gray-100 dark:hover:bg-zinc-800 rounded-lg transition-colors"
+              className="px-6 py-3 text-white/60 hover:text-white transition-colors font-medium"
             >
               Cancelar
             </button>
             <button 
               type="submit"
-              className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg font-medium transition-colors"
+              className="bg-white/20 hover:bg-white/30 text-white px-10 py-3 rounded-xl font-bold backdrop-blur-md border border-white/20 transition-all active:scale-95"
             >
-              Salvar
+              SALVAR
             </button>
           </div>
         </form>
@@ -216,13 +233,14 @@ export default function ChecklistManager() {
         onClose={() => setItemToDelete(null)} 
         title="Confirmar Exclusão"
         maxWidth="sm"
+        glass
       >
-        <div className="space-y-6">
-          <p className="text-gray-600 dark:text-gray-400">Tem certeza que deseja excluir esta tarefa? Esta ação não pode ser desfeita.</p>
-          <div className="flex justify-end gap-3 pt-4 border-t border-gray-100 dark:border-zinc-800">
+        <div className="space-y-6 p-2">
+          <p className="text-xl font-light text-white/70">Tem certeza que deseja excluir esta tarefa? Esta ação não pode ser desfeita.</p>
+          <div className="flex justify-end gap-3 pt-6">
             <button 
               onClick={() => setItemToDelete(null)}
-              className="px-4 py-2 text-gray-700 dark:text-zinc-300 hover:bg-gray-100 dark:hover:bg-zinc-800 rounded-lg transition-colors"
+              className="px-6 py-3 text-white/60 hover:text-white transition-colors font-medium"
             >
               Cancelar
             </button>
@@ -231,9 +249,9 @@ export default function ChecklistManager() {
                 if (itemToDelete) deleteChecklistItem(itemToDelete);
                 setItemToDelete(null);
               }}
-              className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium transition-colors"
+              className="bg-red-500/80 hover:bg-red-500 text-white px-8 py-3 rounded-xl font-bold backdrop-blur-md border border-red-500/20 transition-all active:scale-95"
             >
-              Excluir
+              EXCLUIR
             </button>
           </div>
         </div>

@@ -165,20 +165,20 @@ export default function Quotes() {
   };
 
   return (
-    <div className="min-h-screen bg-white text-zinc-900 -m-8 p-8 md:p-12 overflow-x-hidden relative">
+    <div className="min-h-screen bg-[#004a7c] text-white -m-8 p-8 md:p-12 overflow-x-hidden relative">
       {/* Background Decorative Elements */}
       <div className="absolute inset-0 opacity-20 pointer-events-none overflow-hidden">
         <svg className="w-full h-full" viewBox="0 0 1000 1000" xmlns="http://www.w3.org/2000/svg">
-          <path d="M0,1000 C300,800 400,900 1000,600 L1000,1000 L0,1000 Z" fill="currentColor" className="text-zinc-200" fillOpacity="0.1" />
-          <path d="M0,800 C200,600 500,700 1000,400 L1000,800 L0,800 Z" fill="currentColor" className="text-zinc-100" fillOpacity="0.05" />
+          <path d="M0,1000 C300,800 400,900 1000,600 L1000,1000 L0,1000 Z" fill="white" fillOpacity="0.1" />
+          <path d="M0,800 C200,600 500,700 1000,400 L1000,800 L0,800 Z" fill="white" fillOpacity="0.05" />
         </svg>
       </div>
 
       {isGenerating && (
-        <div className="fixed inset-0 bg-white/90 backdrop-blur-sm z-[9999] flex flex-col items-center justify-center">
-          <div className="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mb-4"></div>
-          <p className="text-zinc-900 font-black uppercase tracking-widest text-sm">Gerando Documento de Alta Qualidade...</p>
-          <p className="text-zinc-400 text-xs mt-2">Isso pode levar alguns segundos</p>
+        <div className="fixed inset-0 bg-[#004a7c]/80 backdrop-blur-sm z-[9999] flex flex-col items-center justify-center">
+          <div className="w-16 h-16 border-4 border-white/20 border-t-white rounded-full animate-spin mb-4"></div>
+          <p className="text-white font-black uppercase tracking-widest text-sm">Gerando Documento de Alta Qualidade...</p>
+          <p className="text-white/60 text-xs mt-2">Isso pode levar alguns segundos</p>
         </div>
       )}
       <AnimatePresence mode="wait">
@@ -189,50 +189,50 @@ export default function Quotes() {
             exit={{ opacity: 0, y: -10 }}
             className="max-w-7xl mx-auto relative z-10"
           >
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-12">
               <div>
-                <h1 className="text-3xl font-bold text-zinc-900">Orçamentos</h1>
-                <p className="text-zinc-500 mt-1">Propostas comerciais e faturamento</p>
+                <h1 className="text-6xl font-light tracking-tight">Orçamentos</h1>
+                <p className="text-xl opacity-60 mt-2 font-light">Propostas comerciais e faturamento</p>
               </div>
               <button 
                 onClick={() => setIsCreating(true)}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 shadow-lg shadow-blue-500/20"
+                className="bg-white/10 hover:bg-white/20 text-white px-8 py-4 flex items-center gap-3 border border-white/20 backdrop-blur-md transition-all group"
               >
-                <Plus className="w-4 h-4" /> 
-                <span>Novo Orçamento</span>
+                <Plus className="w-6 h-6 group-hover:rotate-90 transition-transform" /> 
+                <span className="text-lg font-medium">Novo Orçamento</span>
               </button>
             </div>
 
             {/* Dashboard Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-              <div className="bg-zinc-50 p-6 rounded-xl shadow-sm border border-zinc-200">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+              <div className="bg-white/5 backdrop-blur-md border border-white/10 p-6 rounded-2xl">
                 <div className="flex items-center justify-between mb-4">
-                  <div className="p-3 bg-blue-50 text-blue-600 rounded-lg">
+                  <div className="p-3 bg-white/10 text-white rounded-lg">
                     <FileText className="w-6 h-6" />
                   </div>
-                  <span className="text-2xl font-bold text-zinc-900">{quotes.length}</span>
+                  <span className="text-4xl font-light">{quotes.length}</span>
                 </div>
-                <h3 className="text-zinc-500 font-medium">Total de Orçamentos</h3>
+                <h3 className="text-white/60 font-medium uppercase tracking-wider text-xs">Total de Orçamentos</h3>
               </div>
               
-              <div className="bg-zinc-50 p-6 rounded-xl shadow-sm border border-zinc-200">
+              <div className="bg-white/5 backdrop-blur-md border border-white/10 p-6 rounded-2xl">
                 <div className="flex items-center justify-between mb-4">
-                  <div className="p-3 bg-emerald-50 text-emerald-600 rounded-lg">
+                  <div className="p-3 bg-emerald-500/20 text-emerald-400 rounded-lg">
                     <CheckCircle className="w-6 h-6" />
                   </div>
-                  <span className="text-2xl font-bold text-zinc-900">{approvedQuotes.length}</span>
+                  <span className="text-4xl font-light">{approvedQuotes.length}</span>
                 </div>
-                <h3 className="text-zinc-500 font-medium">Aprovados</h3>
+                <h3 className="text-white/60 font-medium uppercase tracking-wider text-xs">Aprovados</h3>
               </div>
               
-              <div className="bg-zinc-50 p-6 rounded-xl shadow-sm border border-zinc-200">
+              <div className="bg-white/5 backdrop-blur-md border border-white/10 p-6 rounded-2xl">
                 <div className="flex items-center justify-between mb-4">
-                  <div className="p-3 bg-orange-50 text-orange-600 rounded-lg">
+                  <div className="p-3 bg-orange-500/20 text-orange-400 rounded-lg">
                     <Clock className="w-6 h-6" />
                   </div>
-                  <span className="text-2xl font-bold text-zinc-900">{pendingQuotes.length}</span>
+                  <span className="text-4xl font-light">{pendingQuotes.length}</span>
                 </div>
-                <h3 className="text-zinc-500 font-medium">Aguardando Aprovação</h3>
+                <h3 className="text-white/60 font-medium uppercase tracking-wider text-xs">Aguardando Aprovação</h3>
               </div>
             </div>
 
@@ -242,61 +242,61 @@ export default function Quotes() {
                 const client = clients.find(c => c.id === quote.clientId);
                 
                 const statusColors = {
-                  DRAFT: 'bg-zinc-100 text-zinc-800',
-                  SENT: 'bg-blue-100 text-blue-800',
-                  APPROVED: 'bg-emerald-100 text-emerald-800',
-                  REJECTED: 'bg-red-100 text-red-800'
+                  DRAFT: 'bg-white/10 text-white/60',
+                  SENT: 'bg-blue-500/20 text-blue-300',
+                  APPROVED: 'bg-emerald-500/20 text-emerald-300',
+                  REJECTED: 'bg-red-500/20 text-red-300'
                 };
 
                 return (
                   <motion.div
                     key={quote.id}
                     whileHover={{ y: -4 }}
-                    className="bg-zinc-50 rounded-xl shadow-sm border border-zinc-200 p-6 flex flex-col justify-between min-h-[220px] group transition-all"
+                    className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6 flex flex-col justify-between min-h-[240px] group transition-all hover:bg-white/10"
                   >
                     <div>
                       <div className="flex justify-between items-start mb-4">
-                        <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${statusColors[quote.status]}`}>
+                        <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${statusColors[quote.status]}`}>
                           {quote.status === 'DRAFT' ? 'Rascunho' :
                            quote.status === 'SENT' ? 'Enviado' :
                            quote.status === 'APPROVED' ? 'Aprovado' : 'Rejeitado'}
                         </span>
-                        <span className="text-sm text-zinc-400">
+                        <span className="text-xs text-white/40">
                           {new Date(quote.date).toLocaleDateString('pt-BR')}
                         </span>
                       </div>
-                      <h3 className="text-lg font-bold text-zinc-900 mb-1 line-clamp-1" title={client?.name || 'Cliente Desconhecido'}>
+                      <h3 className="text-xl font-bold text-white mb-1 line-clamp-1" title={client?.name || 'Cliente Desconhecido'}>
                         {client?.name || 'Cliente Desconhecido'}
                       </h3>
-                      <p className="text-sm text-zinc-400 mb-4 font-mono">#{quote.id.substring(0, 8)}</p>
-                      <p className="text-2xl font-bold text-zinc-900">
+                      <p className="text-xs text-white/30 mb-4 font-mono">#{quote.id.substring(0, 8)}</p>
+                      <p className="text-3xl font-light text-white">
                         {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(quote.totalValue)}
                       </p>
                     </div>
 
-                    <div className="mt-6 pt-4 border-t border-zinc-200 flex items-center justify-between">
+                    <div className="mt-6 pt-4 border-t border-white/10 flex items-center justify-between">
                       <select 
                         value={quote.status}
                         onChange={(e) => handleStatusChange(quote, e.target.value as Quote['status'])}
-                        className="text-sm bg-white border border-zinc-200 text-zinc-700 rounded-lg px-2 py-1.5 outline-none focus:ring-2 focus:ring-blue-500/20"
+                        className="text-xs bg-white/5 border border-white/10 text-white rounded-lg px-2 py-1.5 outline-none focus:border-white/30"
                       >
-                        <option value="DRAFT">Rascunho</option>
-                        <option value="SENT">Enviado</option>
-                        <option value="APPROVED">Aprovado</option>
-                        <option value="REJECTED">Rejeitado</option>
+                        <option value="DRAFT" className="bg-[#004a7c]">Rascunho</option>
+                        <option value="SENT" className="bg-[#004a7c]">Enviado</option>
+                        <option value="APPROVED" className="bg-[#004a7c]">Aprovado</option>
+                        <option value="REJECTED" className="bg-[#004a7c]">Rejeitado</option>
                       </select>
                       
                       <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                         <button 
                           onClick={() => setViewingQuote(quote)}
-                          className="p-1.5 text-zinc-400 hover:text-blue-600 hover:bg-blue-50 rounded-md transition-colors"
+                          className="p-2 text-white/40 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
                           title="Visualizar"
                         >
                           <Eye className="w-4 h-4" />
                         </button>
                         <button 
                           onClick={() => handlePrintQuote(quote)}
-                          className="p-1.5 text-zinc-400 hover:text-zinc-900 hover:bg-zinc-100 rounded-md transition-colors"
+                          className="p-2 text-white/40 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
                           title="Imprimir"
                         >
                           <Printer className="w-4 h-4" />
@@ -304,7 +304,7 @@ export default function Quotes() {
                         <button 
                           onClick={() => handleDownloadPdf(quote)}
                           disabled={isGenerating}
-                          className="p-1.5 text-zinc-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-md transition-colors"
+                          className="p-2 text-white/40 hover:text-emerald-400 hover:bg-emerald-400/10 rounded-lg transition-colors"
                           title="Baixar PDF"
                         >
                           <Download className="w-4 h-4" />
@@ -315,7 +315,7 @@ export default function Quotes() {
                               deleteQuote(quote.id);
                             }
                           }}
-                          className="p-1.5 text-zinc-400 hover:text-red-600 hover:bg-red-50 rounded-md transition-colors"
+                          className="p-2 text-white/40 hover:text-red-400 hover:bg-red-400/10 rounded-lg transition-colors"
                           title="Excluir"
                         >
                           <Trash2 className="w-4 h-4" />
@@ -326,10 +326,12 @@ export default function Quotes() {
                 );
               })}
               {quotes.length === 0 && (
-                <div className="col-span-full p-12 bg-zinc-50 rounded-xl border-2 border-dashed border-zinc-200 flex flex-col items-center justify-center text-zinc-400">
-                  <FileText className="w-12 h-12 mb-4 opacity-50" />
-                  <p className="text-lg font-bold">Nenhum orçamento encontrado</p>
-                  <p className="text-sm">Crie um novo orçamento para começar</p>
+                <div className="col-span-full py-24 text-center bg-white/5 backdrop-blur-md border border-dashed border-white/20 rounded-2xl">
+                  <div className="inline-flex items-center justify-center w-20 h-20 bg-white/10 rounded-full mb-6">
+                    <FileText className="w-10 h-10 text-white/20" />
+                  </div>
+                  <h3 className="text-2xl font-light opacity-60">Nenhum orçamento encontrado</h3>
+                  <p className="opacity-40 mt-2">Crie um novo orçamento para começar.</p>
                 </div>
               )}
             </div>
@@ -339,24 +341,24 @@ export default function Quotes() {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -20 }}
-            className="p-6 md:p-12 max-w-7xl mx-auto relative z-10"
+            className="max-w-7xl mx-auto relative z-10"
           >
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12">
               <div className="flex items-center gap-6">
                 <button 
                   onClick={() => setIsCreating(false)}
-                  className="p-3 bg-zinc-100 hover:bg-zinc-200 rounded-2xl text-zinc-900 transition-all active:scale-95 border border-zinc-200"
+                  className="p-4 bg-white/10 hover:bg-white/20 rounded-2xl text-white transition-all active:scale-95 border border-white/10 backdrop-blur-md"
                 >
-                  <ArrowLeft className="w-6 h-6" />
+                  <ArrowLeft className="w-8 h-8" />
                 </button>
                 <div>
-                  <h1 className="text-4xl font-black text-zinc-900 tracking-tighter">Nova Proposta</h1>
-                  <p className="text-zinc-400 font-bold mt-1 uppercase text-[10px] tracking-widest">Configure os itens e o cliente</p>
+                  <h1 className="text-6xl font-light tracking-tight text-white">Nova Proposta</h1>
+                  <p className="text-xl opacity-60 mt-2 font-light">Configure os itens e o cliente</p>
                 </div>
               </div>
               <button 
                 onClick={handleSave}
-                className="w-full md:w-auto bg-blue-600 hover:bg-blue-700 text-white px-10 py-4 rounded-2xl font-black text-xs uppercase tracking-widest transition-all active:scale-95 shadow-xl shadow-blue-500/20 flex items-center justify-center gap-3"
+                className="bg-white/10 hover:bg-white/20 text-white px-10 py-4 rounded-2xl font-bold border border-white/20 backdrop-blur-md transition-all active:scale-95 flex items-center justify-center gap-3"
               >
                 <Save className="w-6 h-6" /> 
                 <span>FINALIZAR ORÇAMENTO</span>
@@ -366,26 +368,26 @@ export default function Quotes() {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
               {/* Left Column: Config */}
               <div className="lg:col-span-1 space-y-8">
-                <div className="bg-zinc-50 rounded-xl shadow-sm border border-zinc-200 p-6">
-                  <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400 mb-8">Informações Base</h3>
+                <div className="bg-white/5 backdrop-blur-md border border-white/10 p-8 rounded-2xl">
+                  <h3 className="text-sm font-bold uppercase tracking-wider text-white/50 mb-8">Informações Base</h3>
                   
                   <div className="space-y-6">
                     <div>
-                      <label className="block text-[10px] font-black uppercase tracking-wider text-zinc-400 mb-2">Cliente Destinatário</label>
+                      <label className="block text-xs font-bold uppercase tracking-wider text-white/40 mb-2">Cliente Destinatário</label>
                       <select 
                         value={clientId}
                         onChange={(e) => setClientId(e.target.value)}
-                        className="w-full bg-white border-2 border-zinc-200 focus:border-blue-500 focus:bg-white rounded-2xl px-6 py-4 outline-none font-bold text-zinc-900 transition-all"
+                        className="w-full bg-white/5 border border-white/10 focus:border-white/30 rounded-xl px-4 py-3 outline-none transition-all text-white"
                       >
-                        <option value="">Selecione um cliente...</option>
+                        <option value="" className="bg-[#004a7c]">Selecione um cliente...</option>
                         {clients.map(c => (
-                          <option key={c.id} value={c.id}>{c.name}</option>
+                          <option key={c.id} value={c.id} className="bg-[#004a7c]">{c.name}</option>
                         ))}
                       </select>
                     </div>
 
                     <div>
-                      <label className="block text-[10px] font-black uppercase tracking-wider text-zinc-400 mb-2">Importação Rápida (CSV)</label>
+                      <label className="block text-xs font-bold uppercase tracking-wider text-white/40 mb-2">Importação Rápida (CSV)</label>
                       <input 
                         type="file" 
                         accept=".csv" 
@@ -396,30 +398,30 @@ export default function Quotes() {
                       />
                       <label 
                         htmlFor="csv-upload"
-                        className="w-full flex flex-col items-center justify-center gap-4 border-2 border-dashed border-zinc-200 rounded-[2rem] p-10 text-zinc-300 hover:border-blue-500 hover:text-blue-500 cursor-pointer transition-all group bg-white"
+                        className="w-full flex flex-col items-center justify-center gap-4 border-2 border-dashed border-white/10 rounded-2xl p-10 text-white/20 hover:border-white/30 hover:text-white/40 cursor-pointer transition-all group bg-white/5"
                       >
-                        <FileSpreadsheet className="w-10 h-10 group-hover:scale-110 transition-transform duration-300" />
-                        <span className="text-[10px] font-black uppercase tracking-widest">Carregar Planilha</span>
+                        <FileSpreadsheet className="w-12 h-12 group-hover:scale-110 transition-transform duration-300" />
+                        <span className="text-xs font-bold uppercase tracking-widest">Carregar Planilha</span>
                       </label>
                     </div>
                   </div>
                 </div>
 
-                <div className="bg-zinc-900 rounded-xl p-8 text-white shadow-xl relative overflow-hidden group">
+                <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-8 text-white shadow-xl relative overflow-hidden group">
                   <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2 group-hover:scale-150 transition-transform duration-700"></div>
-                  <h3 className="text-[10px] font-black uppercase tracking-[0.25em] text-zinc-500 mb-8">Resumo Financeiro</h3>
+                  <h3 className="text-sm font-bold uppercase tracking-wider text-white/40 mb-8">Resumo Financeiro</h3>
                   <div className="space-y-6 relative z-10">
-                    <div className="flex justify-between items-center text-sm font-bold">
-                      <span className="text-zinc-500 uppercase tracking-widest text-[10px]">Subtotal Bruto</span>
-                      <span className="font-mono">{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(totalValue)}</span>
+                    <div className="flex justify-between items-center text-sm">
+                      <span className="text-white/40 uppercase tracking-widest text-[10px] font-bold">Subtotal Bruto</span>
+                      <span className="font-mono font-bold">{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(totalValue)}</span>
                     </div>
-                    <div className="flex justify-between items-center text-sm font-bold">
-                      <span className="text-zinc-500 uppercase tracking-widest text-[10px]">Descontos</span>
-                      <span className="font-mono text-emerald-500">R$ 0,00</span>
+                    <div className="flex justify-between items-center text-sm">
+                      <span className="text-white/40 uppercase tracking-widest text-[10px] font-bold">Descontos</span>
+                      <span className="font-mono font-bold text-emerald-400">R$ 0,00</span>
                     </div>
-                    <div className="pt-8 border-t border-zinc-800 flex flex-col gap-2">
-                      <span className="text-[10px] font-black uppercase tracking-[0.3em] text-zinc-500">Total Geral</span>
-                      <span className="text-4xl font-black text-white tracking-tighter">
+                    <div className="pt-8 border-t border-white/10 flex flex-col gap-2">
+                      <span className="text-xs font-bold uppercase tracking-widest text-white/40">Total Geral</span>
+                      <span className="text-5xl font-light text-white tracking-tighter">
                         {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(totalValue)}
                       </span>
                     </div>
@@ -429,9 +431,9 @@ export default function Quotes() {
 
               {/* Right Column: Items */}
               <div className="lg:col-span-2">
-                <div className="bg-zinc-50 rounded-xl shadow-sm border border-zinc-200 overflow-hidden">
-                  <div className="p-8 border-b border-zinc-200 bg-zinc-100/50 flex flex-col sm:flex-row justify-between items-center gap-6">
-                    <h2 className="text-2xl font-black text-zinc-900 tracking-tight">Itens da Proposta</h2>
+                <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl overflow-hidden">
+                  <div className="p-8 border-b border-white/10 bg-white/5 flex flex-col sm:flex-row justify-between items-center gap-6">
+                    <h2 className="text-3xl font-light text-white tracking-tight">Itens da Proposta</h2>
                     <div className="flex gap-3 w-full sm:w-auto">
                       <select 
                         onChange={(e) => {
@@ -442,16 +444,16 @@ export default function Quotes() {
                           }
                           e.target.value = '';
                         }}
-                        className="flex-1 bg-white border-2 border-zinc-200 rounded-2xl px-6 py-3 text-[10px] font-black uppercase tracking-widest focus:border-blue-500 outline-none transition-all shadow-sm"
+                        className="flex-1 bg-white/5 border border-white/10 rounded-xl px-6 py-3 text-xs font-bold uppercase tracking-widest focus:border-white/30 outline-none transition-all text-white"
                       >
-                        <option value="">Catálogo...</option>
+                        <option value="" className="bg-[#004a7c]">Catálogo...</option>
                         {products.map(p => (
-                          <option key={p.id} value={p.id}>{p.name} - R$ {p.price}</option>
+                          <option key={p.id} value={p.id} className="bg-[#004a7c]">{p.name} - R$ {p.price}</option>
                         ))}
                       </select>
                       <button 
                         onClick={addItem}
-                        className="bg-blue-600 hover:bg-blue-700 text-white p-4 rounded-2xl transition-all active:scale-95 shadow-lg shadow-blue-500/20"
+                        className="bg-white/10 text-white p-4 rounded-xl hover:bg-white/20 transition-all active:scale-95 border border-white/10"
                         title="Adicionar Manual"
                       >
                         <Plus className="w-6 h-6" />
@@ -462,7 +464,7 @@ export default function Quotes() {
                   <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse">
                       <thead>
-                        <tr className="bg-zinc-100/50 text-zinc-400 text-[10px] uppercase tracking-wider font-black">
+                        <tr className="bg-white/5 text-white/40 text-[10px] uppercase tracking-wider font-bold">
                           <th className="p-6">Descrição</th>
                           <th className="p-6 w-24 text-center">Qtd</th>
                           <th className="p-6 w-32 text-right">Unitário</th>
@@ -470,15 +472,15 @@ export default function Quotes() {
                           <th className="p-6 w-16"></th>
                         </tr>
                       </thead>
-                      <tbody className="divide-y divide-zinc-200">
+                      <tbody className="divide-y divide-white/5">
                         {items.map((item) => (
-                          <tr key={item.id} className="group hover:bg-zinc-100/30 transition-colors">
+                          <tr key={item.id} className="group hover:bg-white/5 transition-colors">
                             <td className="p-4">
                               <input 
                                 type="text" 
                                 value={item.description}
                                 onChange={(e) => updateItem(item.id, 'description', e.target.value)}
-                                className="w-full bg-transparent border-2 border-transparent rounded-xl px-4 py-3 text-sm font-black text-zinc-900 focus:bg-white focus:border-blue-500 outline-none transition-all"
+                                className="w-full bg-transparent border border-transparent rounded-xl px-4 py-3 text-sm font-bold text-white focus:bg-white/5 focus:border-white/20 outline-none transition-all"
                                 placeholder="Nome do serviço ou produto"
                               />
                             </td>
@@ -487,7 +489,7 @@ export default function Quotes() {
                                 type="number" 
                                 value={item.quantity}
                                 onChange={(e) => updateItem(item.id, 'quantity', parseFloat(e.target.value) || 0)}
-                                className="w-full bg-transparent border-2 border-transparent rounded-xl px-4 py-3 text-sm font-mono font-bold text-center text-zinc-500 focus:bg-white focus:border-blue-500 outline-none transition-all"
+                                className="w-full bg-transparent border border-transparent rounded-xl px-4 py-3 text-sm font-mono font-bold text-center text-white/60 focus:bg-white/5 focus:border-white/20 outline-none transition-all"
                                 min="1"
                               />
                             </td>
@@ -496,20 +498,20 @@ export default function Quotes() {
                                 type="number" 
                                 value={item.unitPrice}
                                 onChange={(e) => updateItem(item.id, 'unitPrice', parseFloat(e.target.value) || 0)}
-                                className="w-full bg-transparent border-2 border-transparent rounded-xl px-4 py-3 text-sm font-mono font-bold text-right text-zinc-500 focus:bg-white focus:border-blue-500 outline-none transition-all"
+                                className="w-full bg-transparent border border-transparent rounded-xl px-4 py-3 text-sm font-mono font-bold text-right text-white/60 focus:bg-white/5 focus:border-white/20 outline-none transition-all"
                                 min="0"
                                 step="0.01"
                               />
                             </td>
                             <td className="p-4 text-right">
-                              <span className="text-sm font-black text-zinc-900">
+                              <span className="text-sm font-bold text-white">
                                 {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(item.total)}
                               </span>
                             </td>
                             <td className="p-4 text-center">
                               <button 
                                 onClick={() => removeItem(item.id)}
-                                className="p-3 text-zinc-300 hover:text-red-600 transition-colors rounded-2xl hover:bg-red-50"
+                                className="p-3 text-white/20 hover:text-red-400 transition-colors rounded-xl hover:bg-red-400/10"
                               >
                                 <Trash2 className="w-5 h-5" />
                               </button>
@@ -521,7 +523,7 @@ export default function Quotes() {
                             <td colSpan={5} className="p-20 text-center">
                               <div className="flex flex-col items-center gap-4 opacity-20">
                                 <Wrench className="w-12 h-12" />
-                                <p className="text-[10px] font-black uppercase tracking-widest">Adicione itens para compor o orçamento.</p>
+                                <p className="text-[10px] font-bold uppercase tracking-widest">Adicione itens para compor o orçamento.</p>
                               </div>
                             </td>
                           </tr>
@@ -542,46 +544,47 @@ export default function Quotes() {
         onClose={() => setViewingQuote(null)} 
         title="Detalhes da Proposta"
         maxWidth="4xl"
+        glass
       >
         {viewingQuote && (
-          <div className="space-y-8">
+          <div className="space-y-8 p-2">
             <div className="flex justify-between items-start">
               <div>
-                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400 mb-1">Cliente</p>
-                <h3 className="text-2xl font-black text-zinc-900">
+                <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/40 mb-1">Cliente</p>
+                <h3 className="text-3xl font-light text-white">
                   {clients.find(c => c.id === viewingQuote.clientId)?.name}
                 </h3>
-                <p className="text-sm text-zinc-500 font-mono mt-1">
+                <p className="text-sm text-white/40 font-mono mt-1">
                   Emitido em {new Date(viewingQuote.date).toLocaleDateString('pt-BR')}
                 </p>
               </div>
               <div className="text-right">
-                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400 mb-1">Valor Total</p>
-                <p className="text-3xl font-black text-blue-600">
+                <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/40 mb-1">Valor Total</p>
+                <p className="text-4xl font-light text-white">
                   {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(viewingQuote.totalValue)}
                 </p>
               </div>
             </div>
 
-            <div className="bg-zinc-50 rounded-2xl overflow-hidden border border-zinc-200">
+            <div className="bg-white/5 backdrop-blur-md rounded-2xl overflow-hidden border border-white/10">
               <table className="w-full text-left">
                 <thead>
-                  <tr className="text-[10px] font-black uppercase tracking-widest text-zinc-400 border-b border-zinc-200">
+                  <tr className="text-[10px] font-bold uppercase tracking-widest text-white/40 border-b border-white/10">
                     <th className="p-4">Item / Descrição</th>
                     <th className="p-4 text-center">Qtd</th>
                     <th className="p-4 text-right">Unitário</th>
                     <th className="p-4 text-right">Total</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-zinc-200">
+                <tbody className="divide-y divide-white/5">
                   {viewingQuote.items.map((item) => (
                     <tr key={item.id}>
-                      <td className="p-4 text-sm font-bold text-zinc-900">{item.description}</td>
-                      <td className="p-4 text-sm text-center text-zinc-500 font-mono">{item.quantity}</td>
-                      <td className="p-4 text-sm text-right text-zinc-500 font-mono">
+                      <td className="p-4 text-sm font-bold text-white">{item.description}</td>
+                      <td className="p-4 text-sm text-center text-white/60 font-mono">{item.quantity}</td>
+                      <td className="p-4 text-sm text-right text-white/60 font-mono">
                         {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(item.unitPrice)}
                       </td>
-                      <td className="p-4 text-sm text-right font-black text-zinc-900 font-mono">
+                      <td className="p-4 text-sm text-right font-bold text-white font-mono">
                         {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(item.total)}
                       </td>
                     </tr>
@@ -593,13 +596,13 @@ export default function Quotes() {
             <div className="flex gap-3 pt-4">
               <button 
                 onClick={() => handleDownloadPdf(viewingQuote)}
-                className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-bold flex items-center justify-center gap-2 hover:scale-[1.02] transition-transform shadow-lg shadow-blue-500/20"
+                className="flex-1 bg-white/10 hover:bg-white/20 text-white py-4 rounded-2xl font-bold flex items-center justify-center gap-2 border border-white/10 transition-all active:scale-95"
               >
                 <Printer className="w-5 h-5" /> Imprimir Proposta
               </button>
               <button 
                 onClick={() => setViewingQuote(null)}
-                className="px-8 py-3 bg-zinc-100 text-zinc-600 rounded-xl font-bold hover:bg-zinc-200 transition-colors"
+                className="px-8 py-4 text-white/60 hover:text-white transition-colors font-bold"
               >
                 Fechar
               </button>

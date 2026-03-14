@@ -69,12 +69,12 @@ export default function Clients() {
   };
 
   return (
-    <div className="min-h-screen bg-white text-zinc-900 -m-8 p-8 md:p-12 overflow-x-hidden relative">
+    <div className="min-h-screen bg-[#004a7c] text-white -m-8 p-8 md:p-12 overflow-x-hidden relative">
       {/* Background Decorative Elements */}
-      <div className="absolute inset-0 opacity-10 pointer-events-none overflow-hidden">
+      <div className="absolute inset-0 opacity-20 pointer-events-none overflow-hidden">
         <svg className="w-full h-full" viewBox="0 0 1000 1000" xmlns="http://www.w3.org/2000/svg">
-          <path d="M0,1000 C300,800 400,900 1000,600 L1000,1000 L0,1000 Z" fill="currentColor" className="text-zinc-200" fillOpacity="0.5" />
-          <path d="M0,800 C200,600 500,700 1000,400 L1000,800 L0,800 Z" fill="currentColor" className="text-zinc-100" fillOpacity="0.5" />
+          <path d="M0,1000 C300,800 400,900 1000,600 L1000,1000 L0,1000 Z" fill="white" fillOpacity="0.1" />
+          <path d="M0,800 C200,600 500,700 1000,400 L1000,800 L0,800 Z" fill="white" fillOpacity="0.05" />
         </svg>
       </div>
 
@@ -82,13 +82,13 @@ export default function Clients() {
         <div className="flex items-center gap-6">
           <button 
             onClick={() => navigate(-1)}
-            className="p-4 bg-zinc-100 hover:bg-zinc-200 rounded-2xl transition-all text-zinc-600 border border-zinc-200 shadow-sm active:scale-95"
+            className="p-4 bg-white/10 hover:bg-white/20 rounded-2xl transition-all text-white border border-white/10 backdrop-blur-md shadow-xl active:scale-95"
           >
             <ArrowLeft className="w-8 h-8" />
           </button>
           <div>
-            <h1 className="text-6xl font-light tracking-tight text-zinc-900">Clientes</h1>
-            <p className="text-xl text-zinc-500 mt-2 font-light">Gerencie sua rede de contatos</p>
+            <h1 className="text-6xl font-light tracking-tight">Clientes</h1>
+            <p className="text-xl opacity-60 mt-2 font-light">Gerencie sua rede de contatos</p>
           </div>
         </div>
         
@@ -96,7 +96,7 @@ export default function Clients() {
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
           onClick={() => openModal()}
-          className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 flex items-center gap-3 border border-blue-700 transition-all rounded-2xl shadow-xl font-bold tracking-widest uppercase text-sm"
+          className="bg-white/10 hover:bg-white/20 text-white px-8 py-4 flex items-center gap-3 border border-white/20 backdrop-blur-md transition-all group"
         >
           <Plus className="w-6 h-6 group-hover:rotate-90 transition-transform" /> 
           <span className="text-lg font-medium">Novo Cliente</span>
@@ -170,11 +170,11 @@ export default function Clients() {
 
         {clients.length === 0 && (
           <div className="col-span-full py-24 text-center relative z-10">
-            <div className="inline-flex items-center justify-center w-24 h-24 bg-zinc-100 rounded-full mb-6 border border-zinc-200">
-              <Users className="w-12 h-12 text-zinc-400" />
+            <div className="inline-flex items-center justify-center w-24 h-24 bg-white/10 rounded-full mb-6 backdrop-blur-md border border-white/10">
+              <Users className="w-12 h-12 text-white/40" />
             </div>
-            <h3 className="text-2xl font-light text-zinc-500">Nenhum cliente cadastrado</h3>
-            <p className="text-zinc-400 mt-2">Clique em "Novo Cliente" para começar sua lista.</p>
+            <h3 className="text-2xl font-light opacity-60">Nenhum cliente cadastrado</h3>
+            <p className="opacity-40 mt-2">Clique em "Novo Cliente" para começar sua lista.</p>
           </div>
         )}
       </div>
@@ -184,83 +184,84 @@ export default function Clients() {
         onClose={closeModal} 
         title={editingId ? 'Editar Cliente' : 'Novo Cliente'}
         maxWidth="md"
+        glass
       >
         <form onSubmit={handleSubmit} className="space-y-6 p-2">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="md:col-span-2">
-              <label className="block text-sm font-bold uppercase tracking-wider text-zinc-500 mb-2">Nome / Condomínio *</label>
+              <label className="block text-sm font-bold uppercase tracking-wider text-white/50 mb-2">Nome / Condomínio *</label>
               <input 
                 required
                 type="text" 
                 value={formData.name}
                 onChange={e => setFormData({...formData, name: e.target.value})}
-                className="w-full bg-zinc-50 border border-zinc-200 focus:border-blue-500 rounded-xl px-4 py-3 outline-none transition-all text-zinc-900 placeholder:text-zinc-400"
+                className="w-full bg-white/5 border border-white/10 focus:border-white/30 rounded-xl px-4 py-3 outline-none transition-all text-white placeholder:text-white/30"
                 placeholder="Ex: Condomínio das Flores"
               />
             </div>
             
             <div>
-              <label className="block text-sm font-bold uppercase tracking-wider text-zinc-500 mb-2">CNPJ / CPF</label>
+              <label className="block text-sm font-bold uppercase tracking-wider text-white/50 mb-2">CNPJ / CPF</label>
               <input 
                 type="text" 
                 value={formData.document}
                 onChange={e => setFormData({...formData, document: e.target.value})}
-                className="w-full bg-zinc-50 border border-zinc-200 focus:border-blue-500 rounded-xl px-4 py-3 outline-none transition-all text-zinc-900 placeholder:text-zinc-400"
+                className="w-full bg-white/5 border border-white/10 focus:border-white/30 rounded-xl px-4 py-3 outline-none transition-all text-white placeholder:text-white/30"
                 placeholder="00.000.000/0000-00"
               />
             </div>
             
             <div>
-              <label className="block text-sm font-bold uppercase tracking-wider text-zinc-500 mb-2">Responsável</label>
+              <label className="block text-sm font-bold uppercase tracking-wider text-white/50 mb-2">Responsável</label>
               <input 
                 type="text" 
                 value={formData.contactPerson}
                 onChange={e => setFormData({...formData, contactPerson: e.target.value})}
-                className="w-full bg-zinc-50 border border-zinc-200 focus:border-blue-500 rounded-xl px-4 py-3 outline-none transition-all text-zinc-900 placeholder:text-zinc-400"
+                className="w-full bg-white/5 border border-white/10 focus:border-white/30 rounded-xl px-4 py-3 outline-none transition-all text-white placeholder:text-white/30"
                 placeholder="Nome do síndico"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-bold uppercase tracking-wider text-zinc-500 mb-2">Telefone *</label>
+              <label className="block text-sm font-bold uppercase tracking-wider text-white/50 mb-2">Telefone *</label>
               <input 
                 required
                 type="text" 
                 value={formData.phone}
                 onChange={e => setFormData({...formData, phone: e.target.value})}
-                className="w-full bg-zinc-50 border border-zinc-200 focus:border-blue-500 rounded-xl px-4 py-3 outline-none transition-all text-zinc-900 placeholder:text-zinc-400"
+                className="w-full bg-white/5 border border-white/10 focus:border-white/30 rounded-xl px-4 py-3 outline-none transition-all text-white placeholder:text-white/30"
                 placeholder="(00) 00000-0000"
               />
             </div>
             
             <div>
-              <label className="block text-sm font-bold uppercase tracking-wider text-zinc-500 mb-2">E-mail</label>
+              <label className="block text-sm font-bold uppercase tracking-wider text-white/50 mb-2">E-mail</label>
               <input 
                 type="email" 
                 value={formData.email}
                 onChange={e => setFormData({...formData, email: e.target.value})}
-                className="w-full bg-zinc-50 border border-zinc-200 focus:border-blue-500 rounded-xl px-4 py-3 outline-none transition-all text-zinc-900 placeholder:text-zinc-400"
+                className="w-full bg-white/5 border border-white/10 focus:border-white/30 rounded-xl px-4 py-3 outline-none transition-all text-white placeholder:text-white/30"
                 placeholder="email@exemplo.com"
               />
             </div>
 
             <div className="md:col-span-2">
-              <label className="block text-sm font-bold uppercase tracking-wider text-zinc-500 mb-2">Endereço *</label>
+              <label className="block text-sm font-bold uppercase tracking-wider text-white/50 mb-2">Endereço *</label>
               <textarea 
                 required
                 value={formData.address}
                 onChange={e => setFormData({...formData, address: e.target.value})}
-                className="w-full bg-zinc-50 border border-zinc-200 focus:border-blue-500 rounded-xl px-4 py-3 outline-none min-h-[80px] resize-none transition-all text-zinc-900 placeholder:text-zinc-400"
+                className="w-full bg-white/5 border border-white/10 focus:border-white/30 rounded-xl px-4 py-3 outline-none min-h-[80px] resize-none transition-all text-white placeholder:text-white/30"
                 placeholder="Rua, Número, Bairro, Cidade"
               />
             </div>
 
             <div className="md:col-span-2">
-              <label className="block text-sm font-bold uppercase tracking-wider text-zinc-500 mb-2">Observações</label>
+              <label className="block text-sm font-bold uppercase tracking-wider text-white/50 mb-2">Observações</label>
               <textarea 
                 value={formData.notes}
                 onChange={e => setFormData({...formData, notes: e.target.value})}
-                className="w-full bg-zinc-50 border border-zinc-200 focus:border-blue-500 rounded-xl px-4 py-3 outline-none min-h-[80px] resize-none transition-all text-zinc-900 placeholder:text-zinc-400"
+                className="w-full bg-white/5 border border-white/10 focus:border-white/30 rounded-xl px-4 py-3 outline-none min-h-[80px] resize-none transition-all text-white placeholder:text-white/30"
                 placeholder="Informações adicionais..."
               />
             </div>
@@ -270,13 +271,13 @@ export default function Clients() {
             <button 
               type="button"
               onClick={closeModal}
-              className="px-6 py-3 text-zinc-500 hover:text-zinc-900 transition-colors font-medium"
+              className="px-6 py-3 text-white/60 hover:text-white transition-colors font-medium"
             >
               Cancelar
             </button>
             <button 
               type="submit"
-              className="bg-blue-600 hover:bg-blue-700 text-white px-10 py-3 rounded-xl font-bold border border-blue-700 transition-all active:scale-95"
+              className="bg-white/20 hover:bg-white/30 text-white px-10 py-3 rounded-xl font-bold backdrop-blur-md border border-white/20 transition-all active:scale-95"
             >
               SALVAR
             </button>
@@ -289,15 +290,16 @@ export default function Clients() {
         onClose={() => setClientToDelete(null)} 
         title="Confirmar Exclusão"
         maxWidth="sm"
+        glass
       >
         <div className="space-y-6 p-2">
-          <p className="text-xl font-light text-zinc-600">
+          <p className="text-xl font-light text-white/70">
             Tem certeza que deseja excluir este cliente? Esta ação não pode ser desfeita.
           </p>
           <div className="flex justify-end gap-3 pt-6">
             <button 
               onClick={() => setClientToDelete(null)}
-              className="px-6 py-3 text-zinc-500 hover:text-zinc-900 transition-colors font-medium"
+              className="px-6 py-3 text-white/60 hover:text-white transition-colors font-medium"
             >
               Cancelar
             </button>
@@ -306,7 +308,7 @@ export default function Clients() {
                 if (clientToDelete) deleteClient(clientToDelete);
                 setClientToDelete(null);
               }}
-              className="bg-red-600 hover:bg-red-700 text-white px-8 py-3 rounded-xl font-bold border border-red-700 transition-all active:scale-95"
+              className="bg-red-500/80 hover:bg-red-500 text-white px-8 py-3 rounded-xl font-bold backdrop-blur-md border border-red-500/20 transition-all active:scale-95"
             >
               EXCLUIR
             </button>
