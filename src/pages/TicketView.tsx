@@ -60,7 +60,7 @@ export default function TicketView() {
         <div className="flex justify-between items-center mb-8 print:hidden">
           <div className="flex items-center gap-4">
             <button 
-              onClick={() => navigate(-1)}
+              onClick={() => navigate('/')}
               className="p-2 text-white/60 hover:text-white transition-colors rounded-full hover:bg-white/10"
             >
               <ArrowLeft className="w-5 h-5" />

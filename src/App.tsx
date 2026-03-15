@@ -57,7 +57,7 @@ function Layout({ children }: { children: React.ReactNode }) {
   ].some(path => location.pathname.startsWith(path));
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-zinc-950 text-gray-900 dark:text-white transition-colors duration-200 font-sans flex flex-col">
+    <div className="min-h-screen bg-[#004a7c] text-gray-900 dark:text-white transition-colors duration-200 font-sans flex flex-col">
       {/* Modern Top Bar */}
       {!isImmersive && (
         <header className="bg-white dark:bg-zinc-900 border-b border-gray-200 dark:border-zinc-800 px-6 py-4 flex items-center justify-between z-20 relative">
